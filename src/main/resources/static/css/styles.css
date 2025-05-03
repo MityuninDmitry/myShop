@@ -50,3 +50,77 @@
     color: #999;
     margin-bottom: 10px;
 }
+
+
+.search-panel {
+        background-color: #f8f9fa;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .search-form {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 15px;
+    }
+
+    .sort-group
+    .search-group,
+    .info-group,
+    .nav-group,
+    .size-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        min-width: 0; /* Для корректного сжатия */
+    }
+
+    .search-group {
+        min-width: 300px;
+        flex: 2;
+    }
+
+    .form-control {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .nav-link {
+        padding: 5px 10px;
+        text-decoration: none;
+        color: #333;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .size-btn {
+        padding: 5px 10px;
+        text-decoration: none;
+        color: #333;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .size-btn.active {
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+
+    @media (max-width: 1200px) {
+        .search-form {
+            flex-wrap: wrap;
+        }
+        .search-group {
+            flex: 100%;
+        }
+    }
+
+.nowrap {
+        white-space: nowrap;
+}

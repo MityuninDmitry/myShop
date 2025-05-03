@@ -1,14 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Список товаров</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
-<div class="container">
-  <!-- Заголовок страницы -->
-  <h1>Наши товары</h1>
+<div class="search-panel">
+  <form th:action="@{/}" method="get" class="search-form">
+    <!-- Поле поиска и кнопка -->
+    <div class="search-group">
+      <input type="text"
+             class="form-control"
+             name="textFilter"
+             th:value="${filterRequest.textFilter()}"
+             placeholder="Поиск товаров..."
+             style="flex: 1;">
+      <!-- Скрытые поля для других параметров -->
+      <input type="hidden" name="size" th:value="${filterRequest.size()}">
+      <input type="hidden" name="page" value="0"> <!-- Всегда сбрасываем на первую страницу при новом поиске -->
+      <input type="hidden" name="sortBy" th:value="${filterRequest.sortBy()}">
+      <input type="hidden" name="sortDirection" th:value="${filterRequest.sortDirection()}">
+
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-search"></i> Поиск
+      </button>
+    </div>
+    <div class="info-group">
+      <span>Постов на странице: <span th:text="${filterRequest.size()}"></span></span>
+      <span>Страница: <span th:text="${filterRequest.page()} + 1"></span></span>
+    </div>
+    <div class="nav-group">
+      <!-- Ссылка "Назад" -->
+      <a th:href="@{/(size=${filterRequest.size()}, page=${filterRequest.page() > 0 ? filterRequest.page() - 1 : 0}, textFilter=${filterRequest.textFilter()}, sortBy=${filterRequest.sortBy()}, sortDirection=${filterRequest.sortDirection()}) }"
+         th:text="'<< Назад'">
+      </a> |
+      <!-- Ссылка "Далее" -->
+      <a th:href="@{/(size=${filterRequest.size()}, page=${filterRequest.page() + 1}, textFilter=${filterRequest.textFilter()}, sortBy=${filterRequest.sortBy()}, sortDirection=${filterRequest.sortDirection()}) }"
+         th:text="'Далее >>'">
+      </a>
+    </div>
+    <div class="size-group">
+      <a th:href="@{/(size=10, page=0, textFilter=${filterRequest.textFilter()}, sortBy=${filterRequest.sortBy()}, sortDirection=${filterRequest.sortDirection()} )}" th:text="'10'"></a> |
+      <a th:href="@{/(size=20, page=0, textFilter=${filterRequest.textFilter()}, sortBy=${filterRequest.sortBy()}, sortDirection=${filterRequest.sortDirection()} ) }" th:text="'20'"></a> |
+      <a th:href="@{/(size=50, page=0, textFilter=${filterRequest.textFilter()}, sortBy=${filterRequest.sortBy()}, sortDirection=${filterRequest.sortDirection()} ) }" th:text="'50'"></a>
+      <a th:href="@{/(size=100, page=0, textFilter=${filterRequest.textFilter()}, sortBy=${filterRequest.sortBy()}, sortDirection=${filterRequest.sortDirection()} ) }" th:text="'100'"></a>
+    </div>
+    <div class="sort-group">
+      <a th:href="@{/(size=${filterRequest.size()}, page=0, textFilter=${filterRequest.textFilter()}, sortBy='name', sortDirection='asc' )}">
+       Имя (А-Я)
+      </a> |
+
+      <a th:href="@{/(size=${filterRequest.size()}, page=0, textFilter=${filterRequest.textFilter()}, sortBy='name', sortDirection='desc' )}">
+        Имя (Я-А)
+      </a> |
+
+      <a th:href="@{/(size=${filterRequest.size()}, page=0, textFilter=${filterRequest.textFilter()}, sortBy='price', sortDirection='asc' )}">
+        Цена (дешевые сначала)
+      </a> |
+
+      <a th:href="@{/(size=${filterRequest.size()}, page=0, textFilter=${filterRequest.textFilter()}, sortBy='price', sortDirection='desc' )}">
+        Цена (дорогие сначала)
+      </a>
+    </div>
+  </form>
+</div>
 
   <!-- Сетка товаров -->
   <div class="product-grid" th:unless="${#lists.isEmpty(products)}">
