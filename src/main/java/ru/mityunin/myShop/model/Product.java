@@ -1,6 +1,7 @@
 package ru.mityunin.myShop.model;
 
 import jakarta.persistence.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,6 +28,9 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderedProduct> orderedProducts = new ArrayList<>();
+
+    @Transient
+    private Integer countInBasket;
 
     public Long getId() {
         return id;
@@ -74,5 +78,13 @@ public class Product {
 
     public void setOrderedProducts(List<OrderedProduct> orderedProducts) {
         this.orderedProducts = orderedProducts;
+    }
+
+    public Integer getCountInBasket() {
+        return countInBasket;
+    }
+
+    public void setCountInBasket(Integer countInBasket) {
+        this.countInBasket = countInBasket;
     }
 }
