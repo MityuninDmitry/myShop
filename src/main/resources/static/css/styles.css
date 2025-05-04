@@ -158,3 +158,9 @@
     font-size: 1.1rem;
     font-weight: 500;
 }
+
+.product-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+}

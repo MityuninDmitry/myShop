@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Список товаров</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+  <meta charset="UTF-8">
+  <title>Список товаров</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
 <a th:href="@{/createTestProducts}">Удалить все и добавить товары с нуля</a>
@@ -50,7 +50,7 @@
     </div>
     <div class="sort-group">
       <a th:href="@{/(size=${filterRequest.size()}, page=0, textFilter=${filterRequest.textFilter()}, sortBy='name', sortDirection='asc' )}">
-       Имя (А-Я)
+        Имя (А-Я)
       </a> |
 
       <a th:href="@{/(size=${filterRequest.size()}, page=0, textFilter=${filterRequest.textFilter()}, sortBy='name', sortDirection='desc' )}">
@@ -68,10 +68,11 @@
   </form>
 </div>
 
-  <!-- Сетка товаров -->
-  <div class="product-grid" th:unless="${#lists.isEmpty(products)}">
-    <!-- Цикл по всем товарам -->
-    <div class="product-card" th:each="product : ${products}">
+<!-- Сетка товаров -->
+<div class="product-grid" th:unless="${#lists.isEmpty(products)}">
+  <!-- Цикл по всем товарам -->
+  <div class="product-card" th:each="product : ${products}">
+    <a th:href="@{/products/{id}(id=${product.id})}" class="product-link">
       <!-- Картинка товара (с проверкой на наличие) -->
       <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
            class="no-image">
@@ -116,15 +117,14 @@
           <input type="hidden" name="sortDirection" th:value="${filterRequest.sortDirection()}">
         </form>
       </div>
-
-
-    </div>
+    </a>
   </div>
+</div>
 
-  <!-- Сообщение, если товаров нет -->
-  <div th:if="${#lists.isEmpty(products)}" class="empty-message">
-    Товары не найдены
-  </div>
+<!-- Сообщение, если товаров нет -->
+<div th:if="${#lists.isEmpty(products)}" class="empty-message">
+  Товары не найдены
+</div>
 </div>
 </body>
 

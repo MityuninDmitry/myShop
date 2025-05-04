@@ -79,4 +79,10 @@ public class ProductService {
             }
         }
     }
+
+    public Product getProductBy(Long id) {
+        Product product = productRepository.findById(id).get();
+        setCountInBasketFor(product);
+        return product;
+    }
 }
