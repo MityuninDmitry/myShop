@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Товар</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
+<!-- Поле с кнопками перехода в корзину, в заказы, домой -->
+<div th:insert="~{fragments/common :: homePanel}"></div>
 <div class="product-card">
   <!-- Картинка товара (с проверкой на наличие) -->
   <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"

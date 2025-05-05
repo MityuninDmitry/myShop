@@ -6,10 +6,12 @@
   <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
+<!-- Поле с кнопками перехода в корзину, в заказы, домой -->
+<div th:insert="~{fragments/common :: homePanel}"></div>
+<!-- Техническое поле, чтобы добавить тестовые товары при небходимости -->
 <a th:href="@{/createTestProducts}">Удалить все и добавить товары с нуля</a>
 <div class="search-panel">
   <form th:action="@{/}" method="get" class="search-form">
-
     <!-- Поле поиска и кнопка -->
     <div class="search-group">
       <input type="text"

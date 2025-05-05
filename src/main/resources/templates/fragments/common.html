@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+<div th:fragment="homePanel">
+  <div class="home-panel">
+    <div class="nav-icons">
+      <!-- Иконка "Домой" -->
+      <a th:href="@{/}" class="nav-icon">
+        <img src="/images/home-icon.svg" alt="Главная" title="На главную">
+      </a>
+
+      <!-- Иконка "Корзина" -->
+      <a th:href="@{/order/basket}" class="nav-icon">
+        <img src="/images/basket-icon.svg" alt="Корзина" title="Корзина">
+        <!-- <span class="badge" th:text="${basketItemCount}" th:if="${basketItemCount > 0}"></span> -->
+      </a>
+
+      <!-- Иконка "Заказы" -->
+      <a th:href="@{/order/orders}" class="nav-icon">
+        <img src="/images/orders-icon.svg" alt="Мои заказы" title="Мои заказы">
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

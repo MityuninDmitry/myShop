@@ -3,10 +3,7 @@ package ru.mityunin.myShop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.mityunin.myShop.model.ActionWithProduct;
 import ru.mityunin.myShop.model.FilterRequest;
@@ -22,6 +19,14 @@ public class OrderController {
     @Autowired
     private ProductService productService;
 
+    @GetMapping("/basket")
+    public String getBasket() {
+        return "Basket";
+    }
+    @GetMapping("/orders")
+    public String getOrders() {
+        return "Orders";
+    }
     @PostMapping("/change")
     public String changeProductInBasketFull(
             @RequestParam Long product_id,
