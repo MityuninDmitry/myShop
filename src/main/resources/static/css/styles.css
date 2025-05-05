@@ -146,7 +146,29 @@
     font-size: 1.1rem;
     line-height: 1;
 }
-
+.quantity-btn-pay {
+  min-width: 100px;
+  height: 36px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 4px;
+  background-color: #4CAF50; /* Зеленый цвет для действия оплаты */
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.quantity-control-container {
+    display: inline-block;
+    margin: 10px 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 .quantity-btn:hover {
     background-color: #e9ecef;
 }

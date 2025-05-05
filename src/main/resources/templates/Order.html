@@ -10,7 +10,11 @@
 <div th:insert="~{fragments/common :: homePanel}"></div>
 <!-- Общая цена корзины -->
 <div>
-  <span>Общая цена корзины: <span th:text="${#numbers.formatDecimal(totalPrice, 1, 2, 'COMMA') + ' ₽'}"></span></span>
+  <h3>Купленные товары:</h3>
+  <!-- Общая цена корзины -->
+  <div>
+    <span>Общая стоимость заказа: <span th:text="${#numbers.formatDecimal(totalPrice, 1, 2, 'COMMA') + ' ₽'}"></span></span>
+  </div>
 </div>
 <!-- Сетка товаров -->
 <div class="product-grid" th:unless="${#lists.isEmpty(products)}">
@@ -42,42 +46,18 @@
            th:text="${#numbers.formatDecimal(product.price, 1, 2, 'COMMA') + ' ₽'}">
         0,00 ₽
       </div>
-      <!-- Кнопки добавления в корзину -->
-      <div class="quantity-control-container">
-        <form th:action="@{/order/basketChange}" method="post" class="quantity-form d-flex align-items-center gap-2">
-          <input type="hidden" name="product_id" th:value="${product.id}">
-
-          <!-- Кнопка уменьшения -->
-          <button type="submit" class="quantity-btn minus"
-                  name="actionWithProduct" value="DECREASE">-</button>
-
-          <!-- Количество -->
-          <span class="quantity-value" th:text="${product.countInBasket}">1</span>
-
-          <!-- Кнопка увеличения -->
-          <button type="submit" class="quantity-btn plus"
-                  name="actionWithProduct" value="INCREASE">+</button>
-        </form>
-      </div>
     </a>
   </div>
 
-</div>
-
-<!-- Кнопка оплатить -->
-<div class="quantity-control-container" th:unless="${#lists.isEmpty(products)}">
-  <form th:action="@{/pay}" method="post" class="quantity-form d-flex align-items-center gap-2">
-    <input type="hidden" name="order_id" th:value="${order.id}">
-    <button type="submit" class="quantity-btn-pay">
-      Оплатить
-    </button>
-  </form>
 </div>
 
 <!-- Сообщение, если товаров нет -->
 <div th:if="${#lists.isEmpty(products)}" class="empty-message">
   Товары не найдены
 </div>
+
+
+
 
 </body>
 </html>

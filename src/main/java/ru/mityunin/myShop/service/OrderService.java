@@ -11,8 +11,7 @@ import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -29,22 +28,62 @@ public class OrderService {
         return orderRepository.findAllByStatus(orderStatus, pageable).toList();
     }
 
+    public BigDecimal getTotalPriceOrders(List<Order> orders) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (Order order: orders) {
+            totalPrice = totalPrice.add(order.getTotalPrice());
+        }
+        return totalPrice;
+    }
+
+    public List<Product> getProductsByOrder(Order order) {
+        List<Product> products = new ArrayList<>();
+        for (OrderedProduct orderedProduct: order.getOrderedProducts()) {
+            Product product = orderedProduct.getProduct();
+            product.setCountInBasket(orderedProduct.getCount());
+            products.add(orderedProduct.getProduct());
+        }
+        Collections.sort(products, new Comparator<Product>() {
+            @Override
+            public int compare(Product o1, Product o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        return products;
+    }
+    public List<Product> getProductsByOrderId(Long order_id) {
+        Order order = orderRepository.findById(order_id).get();
+        return getProductsByOrder(order);
+    }
     @Transactional
     public Order getBasket() {
         // ищем заказы с типом корзина (должен быт всегда 1 штука, а если нет, то создать)
-        List<Order> orders = findOrdersBy(OrderStatus.BASKET);
+        List<Order> orders = findOrdersBy(OrderStatus.PRE_ORDER);
         Order basket;
         if (!orders.isEmpty()) { // если есть, то получаем корзину
             basket = orders.getFirst();
         } else  { // если нет такого в БД, то создаем
-            basket = new Order();
-            basket.setStatus(OrderStatus.BASKET);
-            basket.setTotalPrice(BigDecimal.ZERO);
-            orderRepository.save(basket);
+            basket = createBasket();
         }
         return basket;
     }
 
+    @Transactional
+    public Order createBasket() {
+        Order basket = new Order();
+        basket.setStatus(OrderStatus.PRE_ORDER);
+        basket.setTotalPrice(BigDecimal.ZERO);
+        orderRepository.save(basket);
+        return basket;
+    }
+
+    @Transactional
+    public void setPaidFor(Long order_id) {
+        Order order = orderRepository.findById(order_id).get();
+        order.setStatus(OrderStatus.PAID);
+        orderRepository.save(order);
+        createBasket();
+    }
 
     @Transactional
     public void updateProductInBasketBy(Long product_id, ActionWithProduct actionWithProduct) {
@@ -102,5 +141,22 @@ public class OrderService {
                 .filter(p -> p.getProduct().getId().equals(product_id))
                 .findFirst();
         return optionalOrderedProduct.get();
+    }
+
+    // забираем продукты из корзины и возвращаем
+    public List<Product> getBasketProducts() {
+        Order basket = getBasket();
+        return getProductsByOrder(basket);
+    }
+
+    // забираем продукты из корзины и возвращаем
+    public BigDecimal getBasketPrice() {
+        Order basket = getBasket();
+        return basket.getTotalPrice();
+    }
+
+    public BigDecimal getOrderTotalPriceBy(Long order_id) {
+        Order order = orderRepository.findById(order_id).get();
+        return order.getTotalPrice();
     }
 }

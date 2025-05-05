@@ -8,6 +8,41 @@
 <body>
 <!-- Поле с кнопками перехода в корзину, в заказы, домой -->
 <div th:insert="~{fragments/common :: homePanel}"></div>
-<h2>Hello, I am Orders </h2>
+<!-- Общая цена корзины -->
+<div>
+    <span>Общая цена заказов: <span th:text="${#numbers.formatDecimal(totalPrice, 1, 2, 'COMMA') + ' ₽'}"></span></span>
+</div>
+<!-- Сетка заказов -->
+<div class="product-grid" th:unless="${#lists.isEmpty(orders)}">
+    <!-- Цикл по всем товарам -->
+    <div class="product-card" th:each="order : ${orders}">
+        <a th:href="@{/order/{id}(id=${order.id})}" class="product-link">
+            <!-- Общая цена корзины -->
+            <div>
+                <span>Создан в <span th:text="${#temporals.format(order.createDateTime, 'dd.MM.yyyy HH:mm:ss')}"></span></span>
+            </div>
+            <!-- Название товара -->
+            <div class="product-name">
+                <span>Статус <span th:text="${order.status}"></span></span>
+            </div>
+
+            <!-- Цена товара -->
+            <div class="product-price"
+                 th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2, 'COMMA') + ' ₽'}">
+                0,00 ₽
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<!-- Сообщение, если товаров нет -->
+<div th:if="${#lists.isEmpty(orders)}" class="empty-message">
+    Оплаченные заказы не найдены
+</div>
+
+
+
+
 </body>
 </html>
