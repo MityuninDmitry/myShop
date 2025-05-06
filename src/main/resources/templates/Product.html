@@ -9,6 +9,10 @@
 <!-- Поле с кнопками перехода в корзину, в заказы, домой -->
 <div th:insert="~{fragments/common :: homePanel}"></div>
 <div class="product-card">
+  <!-- Название товара -->
+  <div class="product-name" th:text="${product.name}">
+    Название товара
+  </div>
   <!-- Картинка товара (с проверкой на наличие) -->
   <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
        class="no-image">
@@ -18,11 +22,6 @@
        th:src="${product.imageUrl}"
        alt="Изображение товара"
        class="product-image" width="30%" height="30%">
-
-  <!-- Название товара -->
-  <div class="product-name" th:text="${product.name}">
-    Название товара
-  </div>
 
   <!-- Описание товара -->
   <div class="product-name" th:text="${product.description}">
