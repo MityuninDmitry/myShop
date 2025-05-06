@@ -120,21 +120,4 @@ class ProductServiceTest extends SpringBootPostgreSQLBase {
         productService.setCountInBasketFor(product);
         assertEquals(4, product.getCountInBasket());
     }
-
-    // public void setCountInBasketFor(Product product) {
-    //        Order basket = orderService.getBasket();
-    //        if (basket.getOrderedProducts() == null)  {
-    //            product.setCountInBasket(0);
-    //        } else {
-    //            Optional<OrderedProduct> orderedProduct = basket.getOrderedProducts().stream()
-    //                    .filter(p -> p.getProduct().getId().equals(product.getId()))
-    //                    .findFirst();
-    //
-    //            if (orderedProduct.isPresent()) {
-    //                product.setCountInBasket(orderedProduct.get().getCount());
-    //            } else  {
-    //                product.setCountInBasket(0);
-    //            }
-    //        }
-    //    }
 }
