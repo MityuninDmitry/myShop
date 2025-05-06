@@ -1,10 +1,12 @@
 package ru.mityunin.myShop;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
  * Базовый класс для всех тестов, в которых используется PostgreSQL-контейнер.
@@ -31,10 +33,5 @@ public abstract class SpringBootPostgreSQLBase {
         // Явно включаем Liquibase для тестов
         registry.add("spring.liquibase.enabled", () -> "true");
         registry.add("spring.liquibase.change-log", () -> "classpath:/db/changelog/db.changelog-master.xml");
-    }
-
-    @AfterAll
-    static void stopPostgres() {
-        postgres.close();
     }
 }

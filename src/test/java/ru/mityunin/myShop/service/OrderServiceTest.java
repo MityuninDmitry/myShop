@@ -119,6 +119,7 @@ public class OrderServiceTest extends SpringBootPostgreSQLBase {
     }
 
     @Test
+    @Transactional
     public void shouldReturnBasketWhenBasketNotExists() {
         Order order = orderService.getBasket();
         assertEquals(order.getStatus(), OrderStatus.PRE_ORDER);
@@ -211,6 +212,7 @@ public class OrderServiceTest extends SpringBootPostgreSQLBase {
     }
 
     @Test
+    @Transactional
     public void shouldGetOrderTotalPriceByOrderId() {
         Order order = new Order();
         order.setTotalPrice(BigDecimal.TEN);
