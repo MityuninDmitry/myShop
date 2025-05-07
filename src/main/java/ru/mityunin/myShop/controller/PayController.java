@@ -12,16 +12,11 @@ import ru.mityunin.myShop.service.PayService;
 public class PayController {
 
     @Autowired
-    private OrderService orderService;
-
-    @Autowired
     private PayService payService;
 
     @PostMapping
     public String payOrder(Model model, @RequestParam Long order_id) {
         payService.setPaidFor(order_id);
-        model.addAttribute("products", orderService.getProductsByOrderId(order_id));
-        model.addAttribute("totalPrice", orderService.getOrderTotalPriceBy(order_id));
         return "redirect:/order/" + order_id;
     }
 }

@@ -74,7 +74,7 @@
 <div class="product-grid" th:unless="${#lists.isEmpty(products)}">
   <!-- Цикл по всем товарам -->
   <div class="product-card" th:each="product : ${products}">
-    <a th:href="@{/products/{id}(id=${product.id})}" class="product-link">
+    <a th:href="@{/product/{id}(id=${product.id})}" class="product-link">
       <!-- Картинка товара (с проверкой на наличие) -->
       <div th:if="${product.imageUrl == null or product.imageUrl.isEmpty()}"
            class="no-image">
@@ -99,6 +99,7 @@
       <div class="quantity-control-container">
         <form th:action="@{/order/change}" method="post" class="quantity-form d-flex align-items-center gap-2">
           <input type="hidden" name="product_id" th:value="${product.id}">
+          <input type="hidden" name="source" th:value="products">
 
           <!-- Кнопка уменьшения -->
           <button type="submit" class="quantity-btn minus"

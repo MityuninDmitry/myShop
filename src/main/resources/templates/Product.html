@@ -35,8 +35,9 @@
   </div>
   <!-- Кнопки добавления в корзину -->
   <div class="quantity-control-container">
-    <form th:action="@{/order/shortChange}" method="post" class="quantity-form d-flex align-items-center gap-2">
+    <form th:action="@{/order/change}" method="post" class="quantity-form d-flex align-items-center gap-2">
       <input type="hidden" name="product_id" th:value="${product.id}">
+      <input type="hidden" name="source" th:value="product">
 
       <!-- Кнопка уменьшения -->
       <button type="submit" class="quantity-btn minus"

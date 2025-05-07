@@ -4,13 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.mityunin.myShop.model.ActionWithProduct;
-import ru.mityunin.myShop.model.FilterRequest;
-import ru.mityunin.myShop.service.OrderService;
 import ru.mityunin.myShop.service.ProductService;
 
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/product")
 public class ProductController {
 
     @Autowired
