@@ -52,7 +52,7 @@ public class HomeControllerTest extends SpringBootPostgreSQLBase {
     }
 
     @Test
-    public void shouldReturnDefaultProducts() throws Exception {
+    public void getProducts_shouldReturnDefaultProducts() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/")
                         .param("page", "0")
                         .param("size", "10")
@@ -77,7 +77,7 @@ public class HomeControllerTest extends SpringBootPostgreSQLBase {
     }
 
     @Test
-    public void shouldReturnZeroProducts() throws Exception {
+    public void getProducts_shouldReturnZeroProducts() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/")
                         .param("page", "6")
                         .param("size", "10")

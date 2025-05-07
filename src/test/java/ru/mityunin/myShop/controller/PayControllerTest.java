@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.mityunin.myShop.SpringBootPostgreSQLBase;
 import ru.mityunin.myShop.service.PayService;
 
 import static org.mockito.Mockito.verify;
@@ -15,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PayControllerTest {
+public class PayControllerTest extends SpringBootPostgreSQLBase {
 
     @Autowired
     MockMvc mockMvc;
