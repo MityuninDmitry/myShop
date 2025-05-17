@@ -5,8 +5,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import ru.mityunin.myShop.model.FilterRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.reactive.result.view.Rendering;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import ru.mityunin.myShop.controller.DTO.FilterRequest;
+import ru.mityunin.myShop.model.Product;
 import ru.mityunin.myShop.service.ProductService;
+
+import java.net.URI;
 
 @Controller
 public class HomeController {
@@ -15,17 +22,17 @@ public class HomeController {
     private ProductService productService;
 
     @GetMapping("/")
-    public String getProducts(Model model,
-                              @ModelAttribute FilterRequest filterRequest
-                              ) {
-        model.addAttribute("products", productService.findAll(filterRequest));
-        model.addAttribute("filterRequest", filterRequest);
-        return "Products";
+    public Mono<Rendering> getProducts(@ModelAttribute FilterRequest filterRequest) {
+        Flux<Product> products = productService.findAll(filterRequest);
+        Rendering r = Rendering.view("Products")
+                        .modelAttribute("products",products)
+                        .modelAttribute("filterRequest",filterRequest)
+                                .build();
+        return Mono.just(r);
     }
 
     @GetMapping("/createTestProducts")
-    public String crateTestProducts() {
-        productService.createTestProducts();
-        return "redirect:/";
+    public Mono<ServerResponse> crateTestProducts() {
+        return productService.createTestProducts().then(ServerResponse.seeOther(URI.create("/")).build());
     }
 }

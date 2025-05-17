@@ -1,32 +1,30 @@
 package ru.mityunin.myShop.model;
 
-import jakarta.persistence.*;
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.Fetch;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+
 @Table(name = "orders")
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "create_date_time")
+    @Column("create_date_time")
     private LocalDateTime createDateTime = LocalDateTime.now();
 
-    @Column(name = "total_price", precision = 19, scale = 2, nullable = false)
+    @Column("total_price")
     private BigDecimal totalPrice;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column("status")
     private OrderStatus status;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Column("orderedProducts")
     private List<OrderedProduct> orderedProducts = new ArrayList<>();
 
     public Long getId() {
@@ -67,5 +65,16 @@ public class Order {
 
     public void setOrderedProducts(List<OrderedProduct> orderedProducts) {
         this.orderedProducts = orderedProducts;
+    }
+
+    public Integer countInOrderedProductWith(Long productId) {
+        return orderedProducts.stream()
+                .filter(orderedProduct -> orderedProduct.getProduct_id().equals(productId))
+                .findFirst()
+                .orElseGet(() -> {
+            OrderedProduct orderedProduct = new OrderedProduct();
+            orderedProduct.setCount(0);
+            return orderedProduct;
+        }).getCount();
     }
 }

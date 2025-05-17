@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.result.view.Rendering;
+import reactor.core.publisher.Mono;
 import ru.mityunin.myShop.service.ProductService;
 
 @Controller
@@ -14,11 +16,12 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/{id}")
-    public String getProduct(@PathVariable Long id, Model model) {
+    public Mono<Rendering> getProduct(@PathVariable Long id, Model model) {
 
-        model.addAttribute("product",productService.getProductBy(id));
-
-        return "Product";
+        Rendering r = Rendering.view("Product")
+                .modelAttribute("product",productService.getProductBy(id))
+                .build();
+        return Mono.just(r);
     }
 
 }

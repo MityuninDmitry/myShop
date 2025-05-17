@@ -1,9 +1,7 @@
 package ru.mityunin.myShop.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import ru.mityunin.myShop.model.OrderedProduct;
 
-import java.util.List;
-
-public interface OrderedProductRepository extends JpaRepository<OrderedProduct, Long> {
+public interface OrderedProductRepository extends R2dbcRepository<OrderedProduct, Long> {
 }

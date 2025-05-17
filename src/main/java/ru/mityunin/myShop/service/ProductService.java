@@ -1,88 +1,77 @@
 package ru.mityunin.myShop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import ru.mityunin.myShop.controller.DTO.FilterRequest;
 import ru.mityunin.myShop.model.*;
 import ru.mityunin.myShop.repository.OrderRepository;
-import ru.mityunin.myShop.repository.OrderedProductRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
-    @Autowired
+
     private ProductRepository productRepository;
-
-    @Autowired
-    private OrderedProductRepository orderedProductRepository;
-    @Autowired
     private OrderRepository orderRepository;
-
-    @Autowired
     private OrderService orderService;
 
-    public List<Product> findAll(FilterRequest filterRequest) {
-        List<Product> products;
+    public ProductService(ProductRepository productRepository, OrderRepository orderRepository, OrderService orderService) {
+        this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
+        this.orderService = orderService;
+    }
+
+    public Flux<Product> findAll(FilterRequest filterRequest) {
+        Flux<Product> products;
         Sort sort = Sort.by(Sort.Direction.fromString(filterRequest.sortDirection()), filterRequest.sortBy());
         Pageable pageable = PageRequest.of(filterRequest.page(), filterRequest.size(), sort);
+
         if (filterRequest.textFilter() == null || filterRequest.textFilter().isBlank()) {
-            products = productRepository.findAll(pageable).stream().toList();
+            products = productRepository.findAll(pageable);
         } else  {
-            products = productRepository.findByNameOrDescriptionContainingIgnoreCase(filterRequest.textFilter(),filterRequest.textFilter(), pageable).stream().toList();
+            products = productRepository.findByNameOrDescriptionContainingIgnoreCase(filterRequest.textFilter(),filterRequest.textFilter(), pageable);
         }
-        // проставляем количество
-        for (Product product: products) {
-            setCountInBasketFor(product);
-        }
-        return products.size() > 0 ? products : new ArrayList<>();
+
+        Order basket = orderService.getBasket().block();
+
+        return products.map(product -> {
+            product.setCountInBasket(basket.countInOrderedProductWith(product.getId()));
+            return product;
+        });
     }
 
     @Transactional
-    public void createTestProducts() {
-        productRepository.deleteAll();
-        orderRepository.deleteAll();
-        orderedProductRepository.deleteAll();
+    public Mono<Void> createTestProducts() {
+        return Mono.zip(productRepository.deleteAll(),orderRepository.deleteAll())
+                .thenMany(Flux.range(0,50))
+                .flatMap(i -> {
+                    Product product = new Product();
+                    product.setName("Name " + i);
+                    product.setPrice(BigDecimal.valueOf(i));
+                    product.setDescription("Some desc " + i);
+                    product.setImageUrl("https://example.com/image.jpg");
+                    return productRepository.save(product);
+                })
+                .then();
 
-        for (int i = 0; i < 50; i++) {
-            Product product = new Product();
-            product.setName("Name " + i);
-            product.setPrice(BigDecimal.valueOf(i));
-            product.setDescription("Some desc " + i);
-            product.setImageUrl("https://images.hdqwalls.com/download/sunset-ronin-ghost-of-tsushima-40-2880x1800.jpg");
-
-            productRepository.save(product);
-        }
     }
 
     // проставление свойства на товаре countInBasket - для отображения в интерфейсе (не для БД)
     public void setCountInBasketFor(Product product) {
-        Order basket = orderService.getBasket();
-        if (basket.getOrderedProducts() == null)  {
-            product.setCountInBasket(0);
-        } else {
-            Optional<OrderedProduct> orderedProduct = basket.getOrderedProducts().stream()
-                    .filter(p -> p.getProduct().getId().equals(product.getId()))
-                    .findFirst();
-
-            if (orderedProduct.isPresent()) {
-                product.setCountInBasket(orderedProduct.get().getCount());
-            } else  {
-                product.setCountInBasket(0);
-            }
-        }
+        Order basket = orderService.getBasket().block();
+        product.setCountInBasket(basket.countInOrderedProductWith(product.getId()));
     }
 
-    public Product getProductBy(Long id) {
-        Product product = productRepository.findById(id).get();
-        setCountInBasketFor(product);
-        return product;
+    public Mono<Product> getProductBy(Long id) {
+        return  productRepository.findById(id).map(p -> {
+            setCountInBasketFor(p);
+            return p;
+        });
     }
 }

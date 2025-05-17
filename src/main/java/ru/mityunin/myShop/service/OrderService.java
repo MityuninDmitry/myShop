@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.mityunin.myShop.model.*;
 import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
@@ -16,147 +18,153 @@ import java.util.*;
 @Service
 public class OrderService {
 
-    @Autowired
     private OrderRepository orderRepository;
-
-    @Autowired
     private ProductRepository productRepository;
 
-    public List<Order> findOrdersBy(OrderStatus orderStatus) {
+    public OrderService(OrderRepository orderRepository, ProductRepository productRepository) {
+        this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
+    }
+
+    public Flux<Order> findOrdersBy(OrderStatus orderStatus) {
         Sort sort = Sort.by(Sort.Direction.fromString("desc"), "createDateTime");
-        Pageable pageable = PageRequest.of(0,1000, sort);
-        return orderRepository.findAllByStatus(orderStatus, pageable).toList();
+        return orderRepository.findByStatus(orderStatus);
     }
 
-    public BigDecimal getTotalPriceOrders(List<Order> orders) {
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        for (Order order: orders) {
-            totalPrice = totalPrice.add(order.getTotalPrice());
-        }
-        return totalPrice;
+    public Mono<BigDecimal> getTotalPriceOrders(Flux<Order> orders) {
+        return orders.map(Order::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public List<Product> getProductsByOrder(Order order) {
-        List<Product> products = new ArrayList<>();
-        for (OrderedProduct orderedProduct: order.getOrderedProducts()) {
-            Product product = orderedProduct.getProduct();
-            product.setCountInBasket(orderedProduct.getCount());
-            products.add(orderedProduct.getProduct());
-        }
-        Collections.sort(products, new Comparator<Product>() {
-            @Override
-            public int compare(Product o1, Product o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-        return products;
+    public Flux<Product> getProductsByOrder(Mono<Order> orderMono) {
+        return orderMono.flatMapMany(order ->
+                productRepository.findAll() // получаем поток продуктов
+                        .filterWhen( // фильтруем асинхронно, чтобы выполнить подсчет и отфильтровать
+                                product -> Mono.fromCallable(() -> order.countInOrderedProductWith(product.getId()))
+                                        .map(count -> count > 0)
+                        )
+                        .map(product -> { // проставляем свойство счетчика количества позиций продукта в корзине и возращаем продукт
+                            Integer count = order.countInOrderedProductWith(product.getId());
+                            product.setCountInBasket(count);
+                            return product;
+                        })
+        );
     }
-    public List<Product> getProductsByOrderId(Long order_id) {
-        Order order = orderRepository.findById(order_id).get();
-        return getProductsByOrder(order);
+    public Flux<Product> getProductsByOrderId(Long order_id) {
+        Mono<Order> orderMono = orderRepository.findById(order_id);
+        return getProductsByOrder(orderMono);
     }
     @Transactional
-    public Order getBasket() {
+    public Mono<Order> getBasket() {
         // ищем заказы с типом корзина (должен быт всегда 1 штука, а если нет, то создать)
-        List<Order> orders = findOrdersBy(OrderStatus.PRE_ORDER);
-        Order basket;
-        if (!orders.isEmpty()) { // если есть, то получаем корзину
-            basket = orders.getFirst();
-        } else  { // если нет такого в БД, то создаем
-            basket = createBasket();
-        }
-        return basket;
+        return findOrdersBy(OrderStatus.PRE_ORDER).collectList()
+                .flatMap(orders -> {
+                    if (orders.isEmpty()) {
+                        // Если корзины нет - создаем новую
+                        return createBasket();
+                    } else {
+                        // Берем первую найденную корзину
+                        return Mono.just(orders.get(0));
+                    }
+                });
     }
 
     @Transactional
-    public Order createBasket() {
+    public Mono<Order> createBasket() {
         Order basket = new Order();
         basket.setStatus(OrderStatus.PRE_ORDER);
         basket.setTotalPrice(BigDecimal.ZERO);
-        orderRepository.save(basket);
-        return basket;
+        return orderRepository.save(basket);
     }
 
     @Transactional
-    public void setPaidFor(Long order_id) {
-        Order order = orderRepository.findById(order_id).get();
-        order.setStatus(OrderStatus.PAID);
-        orderRepository.save(order);
-        createBasket();
+    public Mono<Void> setPaidFor(Long order_id) {
+        return orderRepository.findById(order_id)
+                .flatMap(order1 -> {
+                    order1.setStatus(OrderStatus.PAID);
+                    return  orderRepository.save(order1);
+                })
+                .then(createBasket())
+                .then();
     }
 
-    @Transactional
-    public void updateProductInBasketBy(Long product_id, ActionWithProduct actionWithProduct) {
-        // ищем заказы с типом корзина (должен быт всегда 1 штука, а если нет, то создать)
-        Order basket = getBasket();
-        // ищем связанные продукты корзины и обновляем их количество в зависимости от actionWithProduct
-        if (orderContainsOrderedProductBy(product_id, basket)) { // если есть продукт в корзине
-            OrderedProduct orderedProduct = getOrderedProductBy(product_id, basket);
-            if (actionWithProduct == ActionWithProduct.INCREASE) {
-                orderedProduct.setCount(orderedProduct.getCount() + 1);
+    public Mono<Void> updateProductInBasketBy(Long product_id, ActionWithProduct action) {
+        return getBasket()
+                .flatMap(basket -> Mono.zip(
+                        Mono.just(basket),
+                        productRepository.findById(product_id),
+                        Mono.fromCallable(() -> basket.countInOrderedProductWith(product_id))
+                ))
+                .flatMap(tuple -> {
+                    Order basket = tuple.getT1();
+                    Product product = tuple.getT2();
+                    int currentCount = tuple.getT3();
+
+                    return updateBasketContents(basket, product, currentCount, action)
+                            .then(calculateTotalPrice(basket))
+                            .then(orderRepository.save(basket));
+                })
+                .then();
+    }
+
+    private Mono<Void> updateBasketContents(Order basket, Product product, int currentCount, ActionWithProduct action) {
+        return Mono.fromRunnable(() -> {
+            if (action == ActionWithProduct.INCREASE) {
+                addOrIncreaseProduct(basket, product, currentCount);
             } else {
-                if(orderedProduct.getCount() == 1) { // удаляем из корзины, если остался последний
-                    basket.getOrderedProducts().remove(orderedProduct);
-                } else { // иначе уменьшаем количество товаров в корзине
-                    orderedProduct.setCount(orderedProduct.getCount() - 1);
-                }
+                decreaseOrRemoveProduct(basket, product.getId(), currentCount);
             }
-        } else  { // если нет продукта в корзине и действие добавления, то создаем продукт в корзине
-            if (actionWithProduct == ActionWithProduct.INCREASE) {
-                Product product = productRepository.findById(product_id).get(); // находим продукт
-                // создаем товар в корзине и привязываем к товару и корзине
-                OrderedProduct orderedProduct = new OrderedProduct();
-                orderedProduct.setProduct(product);
-                orderedProduct.setOrder(basket);
-                orderedProduct.setCount(1);
-                basket.getOrderedProducts().add(orderedProduct);
-            }
-        }
-
-        // расчет итоговой цены корзины и сохраняем
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        for (OrderedProduct orderedProduct : basket.getOrderedProducts()) {
-            BigDecimal productPrice = orderedProduct.getProduct().getPrice();
-            BigDecimal count = BigDecimal.valueOf(orderedProduct.getCount());
-            BigDecimal productTotal = productPrice.multiply(count);
-            totalPrice = totalPrice.add(productTotal); // Сохраняем результат!
-        }
-        basket.setTotalPrice(totalPrice);
-        orderRepository.save(basket);
+        });
     }
 
-    // проверка, что заказ содержит товар по его ид
-    public boolean orderContainsOrderedProductBy(Long product_id, Order order) {
-        List<OrderedProduct> orderedProducts =  order.getOrderedProducts();
-        Optional<OrderedProduct> optionalOrderedProduct = orderedProducts.stream()
-                .filter(p -> p.getProduct().getId().equals(product_id))
-                .findFirst();
-        return optionalOrderedProduct.isPresent();
+    private void addOrIncreaseProduct(Order basket, Product product, int currentCount) {
+        basket.getOrderedProducts().stream()
+                .filter(op -> op.getProduct_id().equals(product.getId()))
+                .findFirst()
+                .ifPresentOrElse(
+                        op -> op.setCount(currentCount + 1),
+                        () -> {
+                            OrderedProduct newOp = new OrderedProduct();
+                            newOp.setProduct_id(product.getId());
+                            newOp.setCount(1);
+                            basket.getOrderedProducts().add(newOp);
+                        }
+                );
     }
 
-    // возвращаем конкретный товар по ид - НЕ ВЫЗЫВАТЬ без предварительной проверки orderContainsOrderedProductBy
-    public OrderedProduct getOrderedProductBy(Long product_id, Order order) {
-        List<OrderedProduct> orderedProducts =  order.getOrderedProducts();
-        Optional<OrderedProduct> optionalOrderedProduct = orderedProducts.stream()
-                .filter(p -> p.getProduct().getId().equals(product_id))
-                .findFirst();
-        return optionalOrderedProduct.get();
+    private void decreaseOrRemoveProduct(Order basket, Long productId, int currentCount) {
+        if (currentCount > 1) {
+            basket.getOrderedProducts().stream()
+                    .filter(op -> op.getProduct_id().equals(productId))
+                    .findFirst()
+                    .ifPresent(op -> op.setCount(currentCount - 1));
+        } else {
+            basket.getOrderedProducts().removeIf(op -> op.getProduct_id().equals(productId));
+        }
+    }
+
+    private Mono<BigDecimal> calculateTotalPrice(Order basket) {
+        return Flux.fromIterable(basket.getOrderedProducts())
+                .flatMap(op -> productRepository.findById(op.getProduct_id())
+                        .map(product -> product.getPrice().multiply(BigDecimal.valueOf(op.getCount())))
+                )
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .doOnNext(basket::setTotalPrice);
     }
 
     // забираем продукты из корзины и возвращаем
-    public List<Product> getBasketProducts() {
-        Order basket = getBasket();
-        return getProductsByOrder(basket);
+    public Flux<Product> getBasketProducts() {
+        return getProductsByOrder(getBasket());
     }
 
     // забираем продукты из корзины и возвращаем
     public BigDecimal getBasketPrice() {
-        Order basket = getBasket();
+        Order basket = getBasket().block();
         return basket.getTotalPrice();
     }
 
     public BigDecimal getOrderTotalPriceBy(Long order_id) {
-        Order order = orderRepository.findById(order_id).get();
+        Order order = orderRepository.findById(order_id).block();
         return order.getTotalPrice();
     }
 }

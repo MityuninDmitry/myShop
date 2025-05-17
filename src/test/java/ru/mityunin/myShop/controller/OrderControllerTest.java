@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mityunin.myShop.SpringBootPostgreSQLBase;
+import ru.mityunin.myShop.controller.DTO.FilterRequest;
 import ru.mityunin.myShop.model.*;
 import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.OrderedProductRepository;

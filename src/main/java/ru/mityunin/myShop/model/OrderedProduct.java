@@ -1,32 +1,10 @@
 package ru.mityunin.myShop.model;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "ordered_products")
 public class OrderedProduct {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(name = "count", nullable = false)
     private Integer count;
+    private Long product_id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Integer getCount() {
         return count;
@@ -36,19 +14,11 @@ public class OrderedProduct {
         this.count = count;
     }
 
-    public Order getOrder() {
-        return order;
+    public Long getProduct_id() {
+        return product_id;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProduct_id(Long product_id) {
+        this.product_id = product_id;
     }
 }

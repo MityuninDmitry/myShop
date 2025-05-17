@@ -9,8 +9,11 @@ import ru.mityunin.myShop.repository.OrderRepository;
 
 @Service
 public class PayService {
-    @Autowired
     private OrderService orderService;
+
+    public PayService(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @Transactional
     public void setPaidFor(Long order_id) {

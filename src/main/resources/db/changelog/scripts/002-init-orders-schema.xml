@@ -24,6 +24,9 @@
             <column name="status" type="VARCHAR(20)">
                 <constraints nullable="false"/>
             </column>
+            <column name="ordered_products" type="jsonb">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>

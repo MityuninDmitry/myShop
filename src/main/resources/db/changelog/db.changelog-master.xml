@@ -7,6 +7,4 @@
 
     <include file="scripts/001-init-products-schema.xml" relativeToChangelogFile="true"/>
     <include file="scripts/002-init-orders-schema.xml" relativeToChangelogFile="true"/>
-    <include file="scripts/003-init-ordered_products-schema.xml" relativeToChangelogFile="true"/>
-    <include file="scripts/004-init-foreign_keys.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

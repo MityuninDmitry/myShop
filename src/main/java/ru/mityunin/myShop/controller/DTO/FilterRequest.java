@@ -1,6 +1,7 @@
-package ru.mityunin.myShop.model;
+package ru.mityunin.myShop.controller.DTO;
 
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class FilterRequest {
     private Integer page;
@@ -25,13 +26,23 @@ public class FilterRequest {
         this.sortDirection = sortDirection;
     }
 
-    public RedirectAttributes addToRedirectAttributes(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addAttribute("page", page);
-        redirectAttributes.addAttribute("size", size);
-        redirectAttributes.addAttribute("textFilter", textFilter);
-        redirectAttributes.addAttribute("sortBy", sortBy);
-        redirectAttributes.addAttribute("sortDirection", sortDirection);
-        return redirectAttributes;
+//    public RedirectAttributes addToRedirectAttributes(RedirectAttributes redirectAttributes) {
+//        redirectAttributes.addAttribute("page", page);
+//        redirectAttributes.addAttribute("size", size);
+//        redirectAttributes.addAttribute("textFilter", textFilter);
+//        redirectAttributes.addAttribute("sortBy", sortBy);
+//        redirectAttributes.addAttribute("sortDirection", sortDirection);
+//        return redirectAttributes;
+//    }
+
+    public Map<String, String> getParameters() {
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("page", String.valueOf(page));
+        params.put("size", String.valueOf(size));
+        params.put("textFilter", textFilter);
+        params.put("sortBy", sortBy);
+        params.put("sortDirection", sortDirection);
+        return params;
     }
 
     public Integer page() {
