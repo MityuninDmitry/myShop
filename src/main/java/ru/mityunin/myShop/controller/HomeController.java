@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.reactive.result.view.RedirectView;
 import org.springframework.web.reactive.result.view.Rendering;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,8 +19,11 @@ import java.net.URI;
 @Controller
 public class HomeController {
 
-    @Autowired
     private ProductService productService;
+
+    public HomeController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/")
     public Mono<Rendering> getProducts(@ModelAttribute FilterRequest filterRequest) {
@@ -32,7 +36,8 @@ public class HomeController {
     }
 
     @GetMapping("/createTestProducts")
-    public Mono<ServerResponse> crateTestProducts() {
-        return productService.createTestProducts().then(ServerResponse.seeOther(URI.create("/")).build());
+    public Mono<RedirectView> createTestProducts() {
+        return productService.createTestProducts()
+                .thenReturn(new RedirectView("/"));
     }
 }

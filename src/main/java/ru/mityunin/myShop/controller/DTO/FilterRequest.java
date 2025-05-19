@@ -26,23 +26,9 @@ public class FilterRequest {
         this.sortDirection = sortDirection;
     }
 
-//    public RedirectAttributes addToRedirectAttributes(RedirectAttributes redirectAttributes) {
-//        redirectAttributes.addAttribute("page", page);
-//        redirectAttributes.addAttribute("size", size);
-//        redirectAttributes.addAttribute("textFilter", textFilter);
-//        redirectAttributes.addAttribute("sortBy", sortBy);
-//        redirectAttributes.addAttribute("sortDirection", sortDirection);
-//        return redirectAttributes;
-//    }
-
-    public Map<String, String> getParameters() {
-        Map<String, String> params = new LinkedHashMap<>();
-        params.put("page", String.valueOf(page));
-        params.put("size", String.valueOf(size));
-        params.put("textFilter", textFilter);
-        params.put("sortBy", sortBy);
-        params.put("sortDirection", sortDirection);
-        return params;
+    @Override
+    public String toString() {
+        return "page: " + page + ", size: " + size + ", textFilter: " + textFilter + ", sortBy: " + sortBy + ", sortDirection: " + sortDirection;
     }
 
     public Integer page() {

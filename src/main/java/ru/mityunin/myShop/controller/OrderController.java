@@ -3,12 +3,10 @@ package ru.mityunin.myShop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.result.view.RedirectView;
 import org.springframework.web.reactive.result.view.Rendering;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.mityunin.myShop.controller.DTO.FilterRequest;
 import ru.mityunin.myShop.model.*;
 import ru.mityunin.myShop.service.OrderService;
 
@@ -16,8 +14,11 @@ import ru.mityunin.myShop.service.OrderService;
 @RequestMapping("/order")
 public class OrderController {
 
-    @Autowired
     private OrderService orderService;
+
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @GetMapping("/basket")
     public Mono<Rendering> getBasket() {
@@ -31,8 +32,8 @@ public class OrderController {
     @GetMapping("/{id}")
     public Mono<Rendering> getOrderInfo(@PathVariable Long id) {
         Rendering r = Rendering.view("Order")
-                        .modelAttribute("products", orderService.getProductsByOrderId(id))
-                        .modelAttribute("totalPrice", orderService.getOrderTotalPriceBy(id))
+                .modelAttribute("products", orderService.getProductsByOrderId(id))
+                .modelAttribute("totalPrice", orderService.getOrderTotalPriceBy(id))
                 .build();
         return Mono.just(r);
     }
@@ -48,34 +49,39 @@ public class OrderController {
                 );
     }
     @PostMapping("/change")
-    public Mono<RedirectView> changeProductCountInBasket(@RequestParam Long product_id,
-                                                         @RequestParam ActionWithProduct actionWithProduct,
-                                                         @ModelAttribute Mono<FilterRequest> filterRequest,
-                                                         @RequestParam String source,
-                                                         ServerWebExchange exchange) {
-
-        return orderService.updateProductInBasketBy(product_id, actionWithProduct)
-                .then(filterRequest.flatMap(fr -> {
-                    RedirectView redirectView = new RedirectView();
-
-                    switch (source) {
-                        case "products":
-                            // Добавляем параметры запроса для редиректа
-                            fr.getParameters().forEach((key, value) ->
-                                    exchange.getAttributes().put(key, value));
-                            redirectView.setUrl("/");
-                            break;
-                        case "product":
-                            redirectView.setUrl("/product/" + product_id);
-                            break;
-                        case "basket":
-                            redirectView.setUrl("/order/basket");
-                            break;
-                        default:
-                            redirectView.setUrl("/");
+    public Mono<String> change(ServerWebExchange exchange) {
+        return exchange.getFormData()
+                .flatMap(formData -> {
+                    if (!formData.containsKey("product_id") || !formData.containsKey("actionWithProduct") || !formData.containsKey("source")) {
+                        throw new IllegalArgumentException("Empty parameters product_id or actionWithProduct or source");
                     }
+                    Long productId = Long.parseLong(formData.getFirst("product_id"));
+                    String action = formData.getFirst("actionWithProduct") ;
+                    String source = formData.getFirst("source");
 
-                    return Mono.just(redirectView);
-                }));
+                    String sortBy = formData.containsKey("sortBy") ? formData.getFirst("sortBy") : "name";
+                    String sortDirection = formData.containsKey("sortDirection") ?  formData.getFirst("sortDirection") : "asc";
+
+                    int page = formData.containsKey("page") ? Integer.parseInt(formData.getFirst("page")) : 1;
+                    int size = formData.containsKey("size") ? Integer.parseInt(formData.getFirst("size")) : 10;
+                    String textFilter = formData.containsKey("textFilter") ? formData.getFirst("textFilter") : "";
+
+                    return orderService.updateProductInBasketBy(productId, ActionWithProduct.valueOf(action))
+                            .thenReturn(buildRedirectUrl(source, productId, page, size, textFilter, sortBy, sortDirection));
+                })
+                .onErrorResume(e -> {
+                    System.err.println("Error processing request: " + e.getMessage());
+                    return Mono.just("redirect:/error");
+                });
     }
+
+    private String buildRedirectUrl(String source, Long productId, int page, int size, String textFilter, String sortBy, String sortDirection) {
+        return switch (source) {
+            case "products" -> String.format("redirect:/?page=%s&size=%s&textFilter=%s&sortBy=%s&sortDirection=%s", page, size, textFilter, sortBy, sortDirection);
+            case "product" ->  "redirect:/product/" + productId;
+            case "basket" -> "redirect:/order/basket";
+            default -> "redirect:/";
+        };
+    }
+
 }

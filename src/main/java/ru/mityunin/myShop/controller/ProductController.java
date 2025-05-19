@@ -12,8 +12,11 @@ import ru.mityunin.myShop.service.ProductService;
 @RequestMapping("/product")
 public class ProductController {
 
-    @Autowired
     private ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/{id}")
     public Mono<Rendering> getProduct(@PathVariable Long id, Model model) {

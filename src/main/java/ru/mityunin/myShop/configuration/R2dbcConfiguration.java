@@ -5,25 +5,24 @@ import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
+import org.springframework.data.r2dbc.convert.R2dbcCustomConversions;
+import org.springframework.data.r2dbc.dialect.PostgresDialect;
 import ru.mityunin.myShop.model.converter.OrderedProductReadConverter;
 import ru.mityunin.myShop.model.converter.OrderedProductWriteConverter;
 
 import java.util.List;
 
 @Configuration
-public class R2dbcConfiguration  {
-    // Используем стандартный ObjectMapper
-    private final ObjectMapper objectMapper;
+public class R2dbcConfiguration {
 
-    public R2dbcConfiguration(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
     @Bean
-    protected List<Object> getCustomConverters() {
-        // Регистрируем конвертеры
-        return List.of(
-                new OrderedProductWriteConverter(objectMapper),
-                new OrderedProductReadConverter(objectMapper)
+    public R2dbcCustomConversions r2dbcCustomConversions(ObjectMapper objectMapper) {
+        return R2dbcCustomConversions.of(
+                PostgresDialect.INSTANCE,
+                List.of(
+                        new OrderedProductReadConverter(objectMapper),
+                        new OrderedProductWriteConverter(objectMapper)
+                )
         );
     }
 }

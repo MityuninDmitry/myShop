@@ -24,7 +24,7 @@ public class Order {
     @Column("status")
     private OrderStatus status;
 
-    @Column("orderedProducts")
+    @Column("ordered_products")
     private List<OrderedProduct> orderedProducts = new ArrayList<>();
 
     public Long getId() {

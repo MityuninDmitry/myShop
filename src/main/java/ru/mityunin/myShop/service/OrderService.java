@@ -1,9 +1,5 @@
 package ru.mityunin.myShop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -13,7 +9,6 @@ import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
-import java.util.*;
 
 @Service
 public class OrderService {
@@ -27,7 +22,6 @@ public class OrderService {
     }
 
     public Flux<Order> findOrdersBy(OrderStatus orderStatus) {
-        Sort sort = Sort.by(Sort.Direction.fromString("desc"), "createDateTime");
         return orderRepository.findByStatus(orderStatus);
     }
 
@@ -38,12 +32,12 @@ public class OrderService {
 
     public Flux<Product> getProductsByOrder(Mono<Order> orderMono) {
         return orderMono.flatMapMany(order ->
-                productRepository.findAll() // получаем поток продуктов
-                        .filterWhen( // фильтруем асинхронно, чтобы выполнить подсчет и отфильтровать
+                productRepository.findAll()
+                        .filterWhen(
                                 product -> Mono.fromCallable(() -> order.countInOrderedProductWith(product.getId()))
                                         .map(count -> count > 0)
                         )
-                        .map(product -> { // проставляем свойство счетчика количества позиций продукта в корзине и возращаем продукт
+                        .map(product -> {
                             Integer count = order.countInOrderedProductWith(product.getId());
                             product.setCountInBasket(count);
                             return product;
@@ -56,7 +50,6 @@ public class OrderService {
     }
     @Transactional
     public Mono<Order> getBasket() {
-        // ищем заказы с типом корзина (должен быт всегда 1 штука, а если нет, то создать)
         return findOrdersBy(OrderStatus.PRE_ORDER).collectList()
                 .flatMap(orders -> {
                     if (orders.isEmpty()) {
@@ -82,12 +75,13 @@ public class OrderService {
         return orderRepository.findById(order_id)
                 .flatMap(order1 -> {
                     order1.setStatus(OrderStatus.PAID);
-                    return  orderRepository.save(order1);
+                    return orderRepository.save(order1);
                 })
                 .then(createBasket())
                 .then();
     }
 
+    @Transactional
     public Mono<Void> updateProductInBasketBy(Long product_id, ActionWithProduct action) {
         return getBasket()
                 .flatMap(basket -> Mono.zip(
@@ -152,19 +146,21 @@ public class OrderService {
                 .doOnNext(basket::setTotalPrice);
     }
 
-    // забираем продукты из корзины и возвращаем
     public Flux<Product> getBasketProducts() {
         return getProductsByOrder(getBasket());
     }
 
-    // забираем продукты из корзины и возвращаем
-    public BigDecimal getBasketPrice() {
-        Order basket = getBasket().block();
-        return basket.getTotalPrice();
+    public Mono<BigDecimal> getBasketPrice() {
+        return getBasket().flatMap(order ->
+            Mono.just(order.getTotalPrice())
+        );
     }
 
-    public BigDecimal getOrderTotalPriceBy(Long order_id) {
-        Order order = orderRepository.findById(order_id).block();
-        return order.getTotalPrice();
+    public Mono<BigDecimal> getOrderTotalPriceBy(Long order_id) {
+        return orderRepository.findById(order_id).flatMap(order ->
+                Mono.just(order.getTotalPrice())
+        );
+
+
     }
 }
