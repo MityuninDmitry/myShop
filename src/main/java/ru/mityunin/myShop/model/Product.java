@@ -51,6 +51,9 @@ public class Product {
     }
 
     public String getDescription() {
+        if (description == null) {
+            return "";
+        }
         return description;
     }
 

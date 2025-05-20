@@ -3,26 +3,33 @@ package ru.mityunin.myShop.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.w3c.dom.xpath.XPathEvaluator;
+import reactor.core.publisher.Flux;
 import ru.mityunin.myShop.SpringBootPostgreSQLBase;
 import ru.mityunin.myShop.model.Product;
 import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.OrderedProductRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
+import javax.xml.xpath.XPath;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureWebTestClient
 public class ProductControllerTest extends SpringBootPostgreSQLBase {
     @Autowired
-    MockMvc mockMvc;
+    private WebTestClient webTestClient;
 
     @Autowired
     private ProductRepository productRepository;
@@ -33,34 +40,28 @@ public class ProductControllerTest extends SpringBootPostgreSQLBase {
 
     @BeforeEach
     public void createTestData() {
-        productRepository.deleteAll();
-        orderRepository.deleteAll();
-        orderedProductRepository.deleteAll();
-
-        for (int i = 0; i < 50; i++) {
-            Product product = new Product();
-            product.setName("Name " + i);
-            product.setPrice(BigDecimal.valueOf(i));
-            product.setDescription("Some desc " + i);
-            product.setImageUrl("https://images.hdqwalls.com/download/sunset-ronin-ghost-of-tsushima-40-2880x1800.jpg");
-
-            productRepository.save(product);
-        }
+        productRepository.deleteAll().thenMany(Flux.range(0,50).flatMap(
+                i -> {
+                    Product product = new Product();
+                    product.setName("Name " + i);
+                    product.setDescription("Description " + i);
+                    product.setPrice(BigDecimal.valueOf(i));
+                    return productRepository.save(product);
+                }
+        )).blockLast();
     }
 
     @Test
     public void getProductPage() throws Exception {
-        Product product = productRepository.findAll().getFirst();
-        mockMvc.perform(MockMvcRequestBuilders.get("/product/" + product.getId()))
-                .andExpect(view().name("Product"))
-                .andExpect(model().attributeExists("product"))
-                .andExpect(result -> {
-                    Product p = (Product) result.getModelAndView().getModel().get("product");
-                    assertEquals(p.getName(), product.getName());
-                    assertEquals(p.getImageUrl(), product.getImageUrl());
-                    assertEquals(p.getPrice(), product.getPrice());
-                    assertEquals(p.getDescription(), product.getDescription());
-                })
-        ;
+        Product product = productRepository.findAll().blockFirst();
+        webTestClient.get().uri("/product/" + product.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class).consumeWith(response -> {
+                    String body = response.getResponseBody();
+                    assertNotNull(body);
+                    assertTrue(body.contains("<div class=\"product-name\">" + product.getName() + "</div>"));
+                    assertTrue(body.contains("<div class=\"product-name\">" + product.getDescription() + "</div>"));
+                });
     }
 }
