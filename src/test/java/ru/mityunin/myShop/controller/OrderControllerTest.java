@@ -1,5 +1,7 @@
 package ru.mityunin.myShop.controller;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,18 +10,27 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import ru.mityunin.myShop.SpringBootPostgreSQLBase;
 import ru.mityunin.myShop.controller.DTO.FilterRequest;
 import ru.mityunin.myShop.model.*;
 import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.OrderedProductRepository;
+import ru.mityunin.myShop.repository.ProductCustomRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 import ru.mityunin.myShop.service.OrderService;
+import ru.mityunin.myShop.service.ProductService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -38,339 +49,271 @@ public class OrderControllerTest extends SpringBootPostgreSQLBase {
     private ProductRepository productRepository;
     @Autowired
     private OrderRepository orderRepository;
+
     @Autowired
-    private OrderedProductRepository orderedProductRepository;
+    private ProductCustomRepository productCustomRepository;
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ProductService productService;
 
     @BeforeEach
     public void createTestData() {
-        productRepository.deleteAll();
-        orderRepository.deleteAll();
-        orderedProductRepository.deleteAll();
+        Flux.zip(productRepository.deleteAll(), orderRepository.deleteAll())
+                .thenMany(Flux.range(0,50).flatMap( i ->
+                        {
+                            Product product = new Product();
+                            product.setName("Name " + i);
+                            product.setPrice(BigDecimal.valueOf(i));
+                            product.setDescription("Some desc " + i);
+                            product.setImageUrl("https://images.hdqwalls.com/download/sunset-ronin-ghost-of-tsushima-40-2880x1800.jpg");
 
-        for (int i = 0; i < 50; i++) {
-            Product product = new Product();
-            product.setName("Name " + i);
-            product.setPrice(BigDecimal.valueOf(i));
-            product.setDescription("Some desc " + i);
-            product.setImageUrl("https://images.hdqwalls.com/download/sunset-ronin-ghost-of-tsushima-40-2880x1800.jpg");
-
-            productRepository.save(product);
-        }
+                            return productRepository.save(product);
+                        }
+                )).blockLast();
     }
 
     @Test
     public void getEmptyBasket() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.get("/order/basket"))
-//                .andExpect(view().name("Basket"))
-//                .andExpect(model().attributeExists("products"))
-//                .andExpect(model().attributeExists("totalPrice"))
-//                .andExpect(model().attributeExists("order"))
-//                .andExpect(result -> {
-//                    List<Product> products = (List<Product>) result.getModelAndView().getModel().get("products");
-//                    assertEquals(0,products.size());
-//                })
-//                .andExpect(result -> {
-//                    BigDecimal totalPrice = (BigDecimal) result.getModelAndView().getModel().get("totalPrice");
-//                    assertEquals(BigDecimal.ZERO.doubleValue(),totalPrice.doubleValue());
-//                });
-
+        webTestClient.get().uri("/order/basket")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .consumeWith(response -> {
+                    String body = new String(response.getResponseBody());
+                    Document document = Jsoup.parse(body);
+                    var productCards = document.select(".product-card");
+                    assertEquals(0, productCards.size());
+                    assertTrue(body.contains("<span>Общая цена корзины: <span>0,00 ₽</span></span>"));
+                    assertTrue(body.contains("<div class=\"empty-message\">\n" +
+                            "  Товары не найдены\n" +
+                            "</div>"));
+                });
     }
 
     @Test
-    @Transactional
     public void getOrderInfo() throws Exception {
         //  подготовка заказа
-//
-//        Pageable pageable = PageRequest.of(0,10);
-//        List<Product> products = productRepository.findAll(pageable).toList();
-//
-//        Order order = new Order();
-//        order.setStatus(OrderStatus.PAID);
-//        order.setTotalPrice(BigDecimal.TEN);
-//
-//        List<OrderedProduct> orderedProducts = new ArrayList<>();
-//        for (Product p: products) {
-//            OrderedProduct orderedProduct = new OrderedProduct();
-//            orderedProduct.setProduct(p);
-//            orderedProduct.setCount(1);
-//            orderedProduct.setOrder(order);
-//
-//            orderedProducts.add(orderedProduct);
-//        }
-//
-//        order.setOrderedProducts(orderedProducts);
-//
-//        orderRepository.save(order);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/order/" + order.getId()))
-//                .andExpect(view().name("Order"))
-//                .andExpect(model().attributeExists("products"))
-//                .andExpect(model().attributeExists("totalPrice"))
-//                .andExpect(result -> {
-//                    List<Product> modelProducts = (List<Product>) result.getModelAndView().getModel().get("products");
-//                    assertEquals(products.size(), modelProducts.size());
-//                })
-//                .andExpect(result -> {
-//                    BigDecimal totalPrice = (BigDecimal) result.getModelAndView().getModel().get("totalPrice");
-//                    assertEquals(order.getTotalPrice().doubleValue(), totalPrice.doubleValue());
-//                })
-//        ;
+        FilterRequest filterRequest = new FilterRequest();
+        List<Product> products = productService.findAll(filterRequest)
+                .collectList()
+                .block();
+
+        products.forEach(product -> orderService.updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE).block());
+
+        Order order = orderService.getBasket().block();
+        Double orderTotalPrice = order.getTotalPrice().doubleValue();
+        String formattedPrice = String.format("%.2f", orderTotalPrice).replace('.', ',');
+        orderService.setPaidFor(order.getId()).block();
+
+
+        webTestClient.get().uri("/order/" + order.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .consumeWith(response -> {
+                    String body = new String(response.getResponseBody());
+                    Document document = Jsoup.parse(body);
+
+                    var productCards = document.select(".product-card");
+                    assertEquals(10, productCards.size());
+
+
+                    assertTrue(body.contains("<span>Общая стоимость заказа: <span>" +formattedPrice+ " ₽</span></span>"));
+
+                });
     }
 
     @Test
-    @Transactional
     public void getOrders_OnlyPaidOrdersAndExactSize() throws Exception {
         // подготовка данных
-//        Pageable pageable = PageRequest.of(0,10);
-//        List<Product> products = productRepository.findAll(pageable).toList();
-//
-//        for (int i = 0; i < 10; i++) {
-//            Order order = new Order();
-//            order.setStatus(OrderStatus.PAID);
-//            order.setTotalPrice(BigDecimal.TEN);
-//
-//            List<OrderedProduct> orderedProducts = new ArrayList<>();
-//            for (Product p: products) {
-//                OrderedProduct orderedProduct = new OrderedProduct();
-//                orderedProduct.setProduct(p);
-//                orderedProduct.setCount(1);
-//                orderedProduct.setOrder(order);
-//
-//                orderedProducts.add(orderedProduct);
-//            }
-//
-//            order.setOrderedProducts(orderedProducts);
-//
-//            orderRepository.save(order);
-//        }
-//
-//        Order order = new Order();
-//        order.setStatus(OrderStatus.PRE_ORDER);
-//        order.setTotalPrice(BigDecimal.ZERO);
-//        orderRepository.save(order);
-//
-//        // сам тест
-//        mockMvc.perform(MockMvcRequestBuilders.get("/order/orders"))
-//                .andExpect(view().name("Orders"))
-//                .andExpect(model().attributeExists("orders"))
-//                .andExpect(model().attributeExists("totalPrice"))
-//                .andExpect(result -> {
-//                    List<Order> modelOrdres = (List<Order>) result.getModelAndView().getModel().get("orders");
-//                    assertEquals(10, modelOrdres.size());
-//                    assertFalse(modelOrdres.stream().filter(o -> o.getStatus().equals(OrderStatus.PRE_ORDER)).findFirst().isPresent());
-//                });
-//
+        FilterRequest filterRequest = new FilterRequest();
+        List<Product> products = productService.findAll(filterRequest)
+                .collectList()
+                .block();
 
+        products.forEach(product -> orderService.updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE).block());
+        Order order = orderService.getBasket().block();
+        orderService.setPaidFor(order.getId()).block();
+
+        filterRequest.setPage(2);
+        products = productService.findAll(filterRequest)
+                .collectList()
+                .block();
+
+        products.forEach(product -> orderService.updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE).block());
+        order = orderService.getBasket().block();
+        orderService.setPaidFor(order.getId()).block();
+
+        webTestClient.get().uri("/order/orders")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .consumeWith(response -> {
+                    String body = new String(response.getResponseBody());
+                    Document document = Jsoup.parse(body);
+
+                    var productCards = document.select(".product-card");
+                    assertEquals(2, productCards.size());
+                })
+                ;
+    }
+
+    @Test
+    public void increaseProductInBasketFromDifferentSources() throws Exception  {
+        FilterRequest filterRequest = new FilterRequest();
+        List<Product> products = productService.findAll(filterRequest)
+                .collectList()
+                .block();
+
+        Product product = products.getFirst();
+
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("product_id", product.getId().toString());
+        formData.add("actionWithProduct", "INCREASE");
+        formData.add("source", "products");
+        formData.add("page", filterRequest.page().toString());
+        formData.add("size", filterRequest.size().toString());
+        formData.add("textFilter", filterRequest.textFilter());
+        formData.add("sortBy", filterRequest.sortBy());
+        formData.add("sortDirection", filterRequest.sortDirection());
+
+        webTestClient.post().uri("/order/change")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(formData))
+                .exchange()
+                .expectStatus().is3xxRedirection()
+                .expectHeader().valueEquals("Location", "/?page=1&size=10&textFilter=&sortBy=name&sortDirection=asc")
+        ;
+
+        Order order = orderService.getBasket().block();
+
+        assertEquals(1,order.getOrderedProducts().stream().filter(orderedProduct -> orderedProduct.getProduct_id().equals(product.getId())).findFirst().get().getCount());
+
+        formData = new LinkedMultiValueMap<>();
+        formData.add("product_id", product.getId().toString());
+        formData.add("actionWithProduct", "INCREASE");
+        formData.add("source", "product");
+        formData.add("page", filterRequest.page().toString());
+        formData.add("size", filterRequest.size().toString());
+        formData.add("textFilter", filterRequest.textFilter());
+        formData.add("sortBy", filterRequest.sortBy());
+        formData.add("sortDirection", filterRequest.sortDirection());
+
+        webTestClient.post().uri("/order/change")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(formData))
+                .exchange()
+                .expectStatus().is3xxRedirection()
+                .expectHeader().valueEquals("Location", "/product/" + product.getId())
+        ;
+
+        order = orderService.getBasket().block();
+
+        assertEquals(2,order.getOrderedProducts().stream().filter(orderedProduct -> orderedProduct.getProduct_id().equals(product.getId())).findFirst().get().getCount());
+
+        formData = new LinkedMultiValueMap<>();
+        formData.add("product_id", product.getId().toString());
+        formData.add("actionWithProduct", "INCREASE");
+        formData.add("source", "basket");
+        formData.add("page", filterRequest.page().toString());
+        formData.add("size", filterRequest.size().toString());
+        formData.add("textFilter", filterRequest.textFilter());
+        formData.add("sortBy", filterRequest.sortBy());
+        formData.add("sortDirection", filterRequest.sortDirection());
+
+        webTestClient.post().uri("/order/change")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(formData))
+                .exchange()
+                .expectStatus().is3xxRedirection()
+                .expectHeader().valueEquals("Location", "/order/basket")
+        ;
+
+        order = orderService.getBasket().block();
+
+        assertEquals(3,order.getOrderedProducts().stream().filter(orderedProduct -> orderedProduct.getProduct_id().equals(product.getId())).findFirst().get().getCount());
 
     }
 
     @Test
-    @Transactional
-    public void increaseProductInBasketFromProducts() throws Exception  {
-//        FilterRequest filterRequest = new FilterRequest(0,10,"","name", "asc");
-//        Product product = productRepository.findAll().getFirst();
-//
-//        // Мокаем только для этого теста
-//        OrderService mockOrderService = mock(OrderService.class);
-//        doNothing().when(mockOrderService).updateProductInBasketBy(any(), any());
-//
-//        // Вручную заменяем бин для данного теста к контексте спринга
-//        ReflectionTestUtils.setField(
-//                mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                mockOrderService
-//        );
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/order/change")
-//                        .param("product_id",product.getId().toString())
-//                        .param("actionWithProduct", ActionWithProduct.INCREASE.toString())
-//                        .flashAttr("filterRequest", filterRequest)
-//                        .param("source","products"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/?page=0&size=10&textFilter=&sortBy=name&sortDirection=asc"))
-//                ;
-//
-//        verify(mockOrderService).updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE);
-//
-//        // Возвращаем обратно, чтобы другие тесты проходили
-//        ReflectionTestUtils.setField(mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                orderService);
+    public void decreaseProductInBasketFromDifferentSources() throws Exception  {
+        FilterRequest filterRequest = new FilterRequest();
+        List<Product> products = productService.findAll(filterRequest)
+                .collectList()
+                .block();
 
-    }
+        Product product = products.getFirst();
+        orderService.updateProductInBasketBy(product.getId(), ActionWithProduct.INCREASE).block();
+        orderService.updateProductInBasketBy(product.getId(), ActionWithProduct.INCREASE).block();
+        orderService.updateProductInBasketBy(product.getId(), ActionWithProduct.INCREASE).block();
 
-    @Test
-    @Transactional
-    public void decreaseProductInBasketFromProducts() throws Exception  {
-//        FilterRequest filterRequest = new FilterRequest(0,10,"","name", "asc");
-//        Product product = productRepository.findAll().getFirst();
-//
-//        // Мокаем только для этого теста
-//        OrderService mockOrderService = mock(OrderService.class);
-//        doNothing().when(mockOrderService).updateProductInBasketBy(any(), any());
-//
-//        // Вручную заменяем бин для данного теста к контексте спринга
-//        ReflectionTestUtils.setField(
-//                mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                mockOrderService
-//        );
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/order/change")
-//                        .param("product_id",product.getId().toString())
-//                        .param("actionWithProduct", ActionWithProduct.DECREASE.toString())
-//                        .flashAttr("filterRequest", filterRequest)
-//                        .param("source","products"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/?page=0&size=10&textFilter=&sortBy=name&sortDirection=asc"))
-//        ;
-//
-//        verify(mockOrderService).updateProductInBasketBy(product.getId(),ActionWithProduct.DECREASE);
-//
-//        // Возвращаем обратно, чтобы другие тесты проходили
-//        ReflectionTestUtils.setField(mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                orderService);
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("product_id", product.getId().toString());
+        formData.add("actionWithProduct", "DECREASE");
+        formData.add("source", "products");
+        formData.add("page", filterRequest.page().toString());
+        formData.add("size", filterRequest.size().toString());
+        formData.add("textFilter", filterRequest.textFilter());
+        formData.add("sortBy", filterRequest.sortBy());
+        formData.add("sortDirection", filterRequest.sortDirection());
 
-    }
+        webTestClient.post().uri("/order/change")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(formData))
+                .exchange()
+                .expectStatus().is3xxRedirection()
+                .expectHeader().valueEquals("Location", "/?page=1&size=10&textFilter=&sortBy=name&sortDirection=asc")
+        ;
 
-    @Test
-    public void increaseProductInBasketFromBasket() throws Exception {
-//        FilterRequest filterRequest = new FilterRequest();
-//        Product product = productRepository.findAll().getFirst();
-//
-//        // Мокаем только для этого теста
-//        OrderService mockOrderService = mock(OrderService.class);
-//        doNothing().when(mockOrderService).updateProductInBasketBy(any(), any());
-//
-//        // Вручную заменяем бин для данного теста к контексте спринга
-//        ReflectionTestUtils.setField(
-//                mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                mockOrderService
-//        );
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/order/change")
-//                        .param("product_id",product.getId().toString())
-//                        .param("actionWithProduct", ActionWithProduct.INCREASE.toString())
-//                        .flashAttr("filterRequest", filterRequest)
-//                        .param("source","basket"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/order/basket"));
-//
-//        verify(mockOrderService).updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE);
-//
-//        // Возвращаем обратно, чтобы другие тесты проходили
-//        ReflectionTestUtils.setField(mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                orderService);
-    }
-    @Test
-    public void decreaseProductInBasketFromBasket() throws Exception {
-//        FilterRequest filterRequest = new FilterRequest();
-//        Product product = productRepository.findAll().getFirst();
-//
-//        // Мокаем только для этого теста
-//        OrderService mockOrderService = mock(OrderService.class);
-//        doNothing().when(mockOrderService).updateProductInBasketBy(any(), any());
-//
-//        // Вручную заменяем бин для данного теста к контексте спринга
-//        ReflectionTestUtils.setField(
-//                mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                mockOrderService
-//        );
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/order/change")
-//                        .param("product_id",product.getId().toString())
-//                        .param("actionWithProduct", ActionWithProduct.DECREASE.toString())
-//                        .flashAttr("filterRequest", filterRequest)
-//                        .param("source","basket"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/order/basket"));
-//
-//        verify(mockOrderService).updateProductInBasketBy(product.getId(),ActionWithProduct.DECREASE);
-//
-//        // Возвращаем обратно, чтобы другие тесты проходили
-//        ReflectionTestUtils.setField(mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                orderService);
-    }
-    @Test
-    public void changeProductInBasketFromProduct() throws Exception {
-//        FilterRequest filterRequest = new FilterRequest();
-//        Product product = productRepository.findAll().getFirst();
-//
-//        // Мокаем только для этого теста
-//        OrderService mockOrderService = mock(OrderService.class);
-//        doNothing().when(mockOrderService).updateProductInBasketBy(any(), any());
-//
-//        // Вручную заменяем бин для данного теста к контексте спринга
-//        ReflectionTestUtils.setField(
-//                mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                mockOrderService
-//        );
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/order/change")
-//                        .param("product_id",product.getId().toString())
-//                        .param("actionWithProduct", ActionWithProduct.INCREASE.toString())
-//                        .flashAttr("filterRequest", filterRequest)
-//                        .param("source","product"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/product/" + product.getId()));
-//
-//        verify(mockOrderService).updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE);
-//
-//        // Возвращаем обратно, чтобы другие тесты проходили
-//        ReflectionTestUtils.setField(mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                orderService);
-    }
-    @Test
-    public void changeProductInBasketWithNoNameSource() throws Exception {
-//        FilterRequest filterRequest = new FilterRequest();
-//        Product product = productRepository.findAll().getFirst();
-//
-//        // Мокаем только для этого теста
-//        OrderService mockOrderService = mock(OrderService.class);
-//        doNothing().when(mockOrderService).updateProductInBasketBy(any(), any());
-//
-//        // Вручную заменяем бин для данного теста к контексте спринга
-//        ReflectionTestUtils.setField(
-//                mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                mockOrderService
-//        );
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/order/change")
-//                        .param("product_id",product.getId().toString())
-//                        .param("actionWithProduct", ActionWithProduct.INCREASE.toString())
-//                        .flashAttr("filterRequest", filterRequest)
-//                        .param("source", ""))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/"));
-//
-//        verify(mockOrderService).updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE);
-//
-//        // Возвращаем обратно, чтобы другие тесты проходили
-//        ReflectionTestUtils.setField(mockMvc.getDispatcherServlet().getWebApplicationContext()
-//                        .getBean(OrderController.class),
-//                "orderService",
-//                orderService);
+        Order order = orderService.getBasket().block();
+
+        assertEquals(2,order.getOrderedProducts().stream().filter(orderedProduct -> orderedProduct.getProduct_id().equals(product.getId())).findFirst().get().getCount());
+
+        formData = new LinkedMultiValueMap<>();
+        formData.add("product_id", product.getId().toString());
+        formData.add("actionWithProduct", "DECREASE");
+        formData.add("source", "product");
+        formData.add("page", filterRequest.page().toString());
+        formData.add("size", filterRequest.size().toString());
+        formData.add("textFilter", filterRequest.textFilter());
+        formData.add("sortBy", filterRequest.sortBy());
+        formData.add("sortDirection", filterRequest.sortDirection());
+
+        webTestClient.post().uri("/order/change")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(formData))
+                .exchange()
+                .expectStatus().is3xxRedirection()
+                .expectHeader().valueEquals("Location", "/product/" + product.getId())
+        ;
+
+        order = orderService.getBasket().block();
+
+        assertEquals(1,order.getOrderedProducts().stream().filter(orderedProduct -> orderedProduct.getProduct_id().equals(product.getId())).findFirst().get().getCount());
+
+        formData = new LinkedMultiValueMap<>();
+        formData.add("product_id", product.getId().toString());
+        formData.add("actionWithProduct", "DECREASE");
+        formData.add("source", "basket");
+        formData.add("page", filterRequest.page().toString());
+        formData.add("size", filterRequest.size().toString());
+        formData.add("textFilter", filterRequest.textFilter());
+        formData.add("sortBy", filterRequest.sortBy());
+        formData.add("sortDirection", filterRequest.sortDirection());
+
+        webTestClient.post().uri("/order/change")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(formData))
+                .exchange()
+                .expectStatus().is3xxRedirection()
+                .expectHeader().valueEquals("Location", "/order/basket")
+        ;
+
+        order = orderService.getBasket().block();
+
+        assertTrue(order.getOrderedProducts().isEmpty());
+
     }
 }
