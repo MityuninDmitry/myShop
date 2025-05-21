@@ -2,21 +2,15 @@ package ru.mityunin.myShop.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.Or;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.mityunin.myShop.SpringBootPostgreSQLBase;
 import ru.mityunin.myShop.model.*;
 import ru.mityunin.myShop.repository.OrderRepository;
-import ru.mityunin.myShop.repository.OrderedProductRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,8 +22,6 @@ public class OrderServiceTest extends SpringBootPostgreSQLBase {
     private ProductRepository productRepository;
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private OrderedProductRepository orderedProductRepository;
     @Autowired
     private OrderService orderService;
 

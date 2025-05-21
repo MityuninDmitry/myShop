@@ -3,13 +3,11 @@ package ru.mityunin.myShop.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import ru.mityunin.myShop.SpringBootPostgreSQLBase;
 import ru.mityunin.myShop.controller.DTO.FilterRequest;
 import ru.mityunin.myShop.model.*;
 import ru.mityunin.myShop.repository.OrderRepository;
-import ru.mityunin.myShop.repository.OrderedProductRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
@@ -22,8 +20,6 @@ class ProductServiceTest extends SpringBootPostgreSQLBase {
     private ProductRepository productRepository;
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private OrderedProductRepository orderedProductRepository;
 
     @Autowired
     private ProductService productService;

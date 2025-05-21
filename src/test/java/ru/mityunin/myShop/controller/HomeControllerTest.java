@@ -13,7 +13,6 @@ import ru.mityunin.myShop.SpringBootPostgreSQLBase;
 import ru.mityunin.myShop.controller.DTO.FilterRequest;
 import ru.mityunin.myShop.model.Product;
 import ru.mityunin.myShop.repository.OrderRepository;
-import ru.mityunin.myShop.repository.OrderedProductRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
@@ -30,8 +29,6 @@ public class HomeControllerTest extends SpringBootPostgreSQLBase {
     private ProductRepository productRepository;
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private OrderedProductRepository orderedProductRepository;
 
     @BeforeEach
     public void createTestData() {
