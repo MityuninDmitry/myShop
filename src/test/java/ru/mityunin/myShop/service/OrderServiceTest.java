@@ -63,7 +63,7 @@ public class OrderServiceTest extends SpringBootPostgreSQLBase {
         order1.setTotalPrice(BigDecimal.ZERO);
         Mono<Order> orderMono1 =orderRepository.save(order1);
 
-        Flux.zip(orderMono, orderMono1).subscribe();
+        Flux.zip(orderMono, orderMono1).blockLast();
 
 
 

@@ -12,6 +12,9 @@ services:
       - SPRING_R2DBC_URL=r2dbc:postgresql://postgres:5432/myShop
       - SPRING_R2DBC_USERNAME=springuser
       - SPRING_R2DBC_PASSWORD=springpass
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/myShop
+      - SPRING_DATASOURCE_USERNAME=springuser
+      - SPRING_DATASOURCE_PASSWORD=springpass
   postgres:
     image: postgres:latest
     container_name: postgres_container

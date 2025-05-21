@@ -1,4 +1,4 @@
-# myShop v1
+# myShop v2
 ## Техническое задание 
 Приложение состоит из шести основных частей (модулей):
 - страница витрины товаров, доступных для просмотра и покупки;
@@ -32,6 +32,7 @@
 
 
 ## Особенности реализации 
+- Реализовано на реактивном стеке
 - Корзина - это Order в статусе PRE_ORDER
 - При оформлении заказа из корзины, корзина приобретает статус PAID (становится оплаченным заказом) и создается новая корзина
 - Когда у товара стоит цифра 0, значит товара нет в корзине
@@ -69,7 +70,7 @@ cd myShop
     ``` 
     - в переменные окружения добавить 
     ```
-    SPRING_DATASOURCE_PASSWORD=springpass;SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/myShop;SPRING_DATASOURCE_USERNAME=springuser;SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+    SPRING_R2DBC_PASSWORD=springpass;SPRING_R2DBC_URL=r2dbc:postgresql://localhost:5432/myShop;SPRING_R2DBC_USERNAME=springuser;SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/myShop;SPRING_DATASOURCE_USERNAME=springuser;SPRING_DATASOURCE_PASSWORD=springpass;
     ```
     - нажать Run для запуска
     - остановка по Stop
@@ -81,10 +82,12 @@ cd myShop
     - ввести команду 
     ```
     ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="
+    -DSPRING_R2DBC_URL=r2dbc:postgresql://localhost:5432/myShop
+    -DSPRING_R2DBC_USERNAME=springuser
+    -DSPRING_R2DBC_PASSWORD=springpass
     -DSPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/myShop
     -DSPRING_DATASOURCE_USERNAME=springuser
     -DSPRING_DATASOURCE_PASSWORD=springpass
-    -DSPRING_JPA_HIBERNATE_DDL_AUTO=validate
     "
     ```
 
@@ -94,7 +97,7 @@ cd myShop
 ## Используемые технологии
 
 - Spring Boot 
-- Data JPA/Hibernate
+- WebFlux
 - Docker
 - PostgreSQL
 - Liquibase
