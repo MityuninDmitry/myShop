@@ -91,6 +91,7 @@ public class OrderServiceTest extends SpringBootPostgreSQLBase {
     @Test
     public void shouldGetProductsByOrder() {
         // воссоздаем схему при которой n orders имеет n заказанных продуктов
+        List<Product> products1 = productRepository.findAll().collectList().block();
         List<Order> orders = Flux.range(1,3).flatMap(i -> {
             Order order = new Order();
             order.setStatus(OrderStatus.PAID);
@@ -98,15 +99,16 @@ public class OrderServiceTest extends SpringBootPostgreSQLBase {
             Flux.range(1,i).flatMap( j -> {
                 OrderedProduct orderedProduct = new OrderedProduct();
                 orderedProduct.setCount(1);
-                orderedProduct.setProduct_id(j.longValue());
+
+                orderedProduct.setProduct_id(products1.get(j).getId());
                 order.getOrderedProducts().add(orderedProduct);
                 return Mono.fromCallable(() -> order);
             }).subscribe();
-            return Mono.fromCallable(() -> order);
+            return orderRepository.save(order);
         }).collectList().block();
-
         orders.stream().forEach(order -> {
             List<Product> products = orderService.getProductsByOrder(Mono.just(order)).collectList().block();
+
             assertEquals(products.size(), order.getOrderedProducts().size());
         });
 

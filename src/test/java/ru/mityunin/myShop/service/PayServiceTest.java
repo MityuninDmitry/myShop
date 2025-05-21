@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import ru.mityunin.myShop.SpringBootPostgreSQLBase;
 import ru.mityunin.myShop.model.Order;
 import ru.mityunin.myShop.model.OrderStatus;
@@ -29,33 +30,30 @@ public class PayServiceTest extends SpringBootPostgreSQLBase {
 
     @BeforeEach
     public void createTestData() {
-        productRepository.deleteAll();
-        orderRepository.deleteAll();
-        orderedProductRepository.deleteAll();
+        Flux.zip(productRepository.deleteAll(), orderRepository.deleteAll())
+                .thenMany(Flux.range(1,51).flatMap( i ->
+                        {
+                            Product product = new Product();
+                            product.setName("Name " + i);
+                            product.setPrice(BigDecimal.valueOf(i));
+                            product.setDescription("Some desc " + i);
+                            product.setImageUrl("https://images.hdqwalls.com/download/sunset-ronin-ghost-of-tsushima-40-2880x1800.jpg");
 
-        for (int i = 0; i < 50; i++) {
-            Product product = new Product();
-            product.setName("Name " + i);
-            product.setPrice(BigDecimal.valueOf(i));
-            product.setDescription("Some desc " + i);
-            product.setImageUrl("https://images.hdqwalls.com/download/sunset-ronin-ghost-of-tsushima-40-2880x1800.jpg");
-
-            productRepository.save(product);
-        }
+                            return productRepository.save(product);
+                        }
+                )).blockLast();
     }
 
     @Test
-    @Transactional
     public void shouldSetPaidForOrder() {
-//        Order order = new Order();
-//        order.setStatus(OrderStatus.PRE_ORDER);
-//        order.setTotalPrice(BigDecimal.TEN);
-//
-//        orderRepository.save(order);
-//
-//        payService.setPaidFor(order.getId());
-//
-//        assertEquals(OrderStatus.PAID, orderRepository.findAll().stream().filter(o -> o.getStatus().equals(OrderStatus.PAID)).findFirst().get().getStatus());
-//        assertEquals(2, orderRepository.findAll().size());
+        Order order = new Order();
+        order.setStatus(OrderStatus.PRE_ORDER);
+        order.setTotalPrice(BigDecimal.TEN);
+        orderRepository.save(order).block();
+
+        payService.setPaidFor(order.getId()).block();
+
+        assertEquals(OrderStatus.PAID, orderRepository.findAll().collectList().block().stream().filter(o -> o.getStatus().equals(OrderStatus.PAID)).findFirst().get().getStatus());
+        assertEquals(2, orderRepository.findAll().collectList().block().size());
     }
 }
