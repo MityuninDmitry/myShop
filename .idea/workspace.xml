@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Обновил readme и настройки запуска приложения">
+      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/bd_schema.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/MyShopApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/configuration/R2dbcConfiguration.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/configuration/ThymeleafConfiguration.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/controller/DTO/FilterRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/controller/HomeController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/controller/OrderController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/controller/PayController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/controller/ProductController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/ActionWithProduct.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/Order.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/OrderStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/OrderedProduct.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/Product.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/converter/OrderedProductReadConverter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/converter/OrderedProductWriteConverter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/repository/OrderRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/repository/ProductCustomRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/repository/ProductRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/service/OrderService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/service/PayService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/service/ProductService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/db.changelog-master.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/scripts/001-init-products-schema.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/scripts/002-init-orders-schema.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/styles.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/basket-icon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/home-icon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/orders-icon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/Basket.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/Order.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/Orders.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/Product.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/Products.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/fragments/common.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/SpringBootPostgreSQLBase.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/TestMyShopApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/TestcontainersConfiguration.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/controller/HomeControllerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/controller/OrderControllerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/controller/PayControllerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/controller/ProductControllerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/service/OrderServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/service/PayServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/service/ProductServiceTest.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Record" />
+        <option value="Enum" />
+        <option value="HTML File" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;MityuninDmitry&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:MityuninDmitry/myShop.git&quot;,
+    &quot;accountId&quot;: &quot;7f38b741-36c0-47a6-87b9-51cf8fc35869&quot;
+  }
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2wXyNbltOzpK4jh0bevAKKfbTag" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.MyShopApplication.executor&quot;: &quot;Run&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JUnit.HomeControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.HomeControllerTest.getProducts_shouldReturnDefaultProducts.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.HomeControllerTest.getProducts_shouldReturnZeroProducts.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.HomeControllerTest.shouldReturnDefaultProducts.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.HomeControllerTest.shouldReturnZeroProducts.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MyShopApplicationTests.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.changeProductInBasketWithNoNameSource.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.changeProductInBasketWithoutSource.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.decreaseProductInBasketFromBasket.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.decreaseProductInBasketFromDifferentSources.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getEmptyBasket.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getOrderInfo.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getOrders.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getOrders_OnlyPaidOrdersAndExactSize.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.increaseProductInBasket.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.increaseProductInBasketFromBasket.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.increaseProductInBasketFromDifferentSources.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.increaseProductInBasketFromProduct.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.increaseProductInBasketFromProducts.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceTest.shouldChangeOrderAndCreateNewBasket.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceTest.shouldDecreaseCountAndSetNewTotalPriceBasket.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceTest.shouldFindOrdersByDifferentOrderStatus.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceTest.shouldGetOrderTotalPriceByOrderId.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceTest.shouldGetProductsByOrder.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceTest.shouldGetTotalPriceOrders.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceTest.shouldIncreaseCountAndSetNewTotalPriceBasket.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceTest.shouldReturnBasketWhenBasketExists.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceTest.shouldReturnBasketWhenBasketNotExists.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PayControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PayControllerTest.payOrder.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PayControllerTest.payOrderWithOrderId.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PayServiceTest.shouldSetPaidForOrder.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductControllerTest.getProductPage.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductServiceTest.shouldGetProductByProductId.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductServiceTest.shouldReturnExactCountProductsByDifferentFilters.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductServiceTest.shouldReturnExactCountProductsByFilters.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductServiceTest.shouldReturnNotZeroCountInBasketWhenProductInBasket.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductServiceTest.shouldReturnZeroCountInBasketWhenProductNotInBasket.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestcontainersTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.java in myShop.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.myShop [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.myShop [deploy].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.myShop [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.myShop [org.springframework.boot:spring-boot-maven-plugin:3.4.5:run].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.myShop [org.springframework.boot:spring-boot-maven-plugin:3.4.5:stop].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.myShop [org.springframework.boot:spring-boot-maven-plugin:3.4.5:test-run].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.myShop [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.myShop [test].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/dmitrymityunin/IdeaProjects/myShop/src/main/resources/templates&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources/templates" />
+      <recent name="$PROJECT_DIR$/src/main/resources/db/changelog/scripts" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/webModule" />
+      <recent name="$PROJECT_DIR$/src/main/resources/templates/fragment" />
+      <recent name="$PROJECT_DIR$/src/main/resources/static/images" />
+      <recent name="$PROJECT_DIR$/src/main/resources/static" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.java in myShop">
+    <configuration name="MyShopApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <envs>
+        <env name="SPRING_R2DBC_PASSWORD" value="springpass" />
+        <env name="SPRING_R2DBC_URL" value="r2dbc:postgresql://localhost:5432/myShop" />
+        <env name="SPRING_R2DBC_USERNAME" value="springuser" />
+        <env name="SPRING_DATASOURCE_URL" value="jdbc:postgresql://localhost:5432/myShop" />
+        <env name="SPRING_DATASOURCE_USERNAME" value="springuser" />
+        <env name="SPRING_DATASOURCE_PASSWORD" value="springpass" />
+      </envs>
+      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.MyShopApplication" />
+      <module name="myShop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ru.mityunin.myShop.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="myShop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ru.mityunin.myShop.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="ru.mityunin.myShop.service" />
+      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.service.OrderServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProductServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="myShop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ru.mityunin.myShop.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="ru.mityunin.myShop.service" />
+      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.service.ProductServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProductServiceTest.shouldReturnExactCountProductsByDifferentFilters" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="myShop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ru.mityunin.myShop.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="ru.mityunin.myShop.service" />
+      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.service.ProductServiceTest" />
+      <option name="METHOD_NAME" value="shouldReturnExactCountProductsByDifferentFilters" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="java in myShop" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="myShop" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.MyShopApplication" />
+      <item itemvalue="JUnit.OrderServiceTest" />
+      <item itemvalue="JUnit.ProductServiceTest" />
+      <item itemvalue="JUnit.ProductServiceTest.shouldReturnExactCountProductsByDifferentFilters" />
+      <item itemvalue="JUnit.java in myShop" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.java in myShop" />
+        <item itemvalue="Application.MyShopApplication" />
+        <item itemvalue="JUnit.OrderServiceTest" />
+        <item itemvalue="JUnit.ProductServiceTest" />
+        <item itemvalue="JUnit.ProductServiceTest.shouldReturnExactCountProductsByDifferentFilters" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="" />
+      <created>1746202173400</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1746202173400</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Добавил liquibase">
+      <option name="closed" value="true" />
+      <created>1746202518403</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1746202518403</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Создал модель данных, добавил конфиг Thymeleaf, добавил docker-compose для postgreesql, настроил changeLog и скрипты под текущую модель данных">
+      <option name="closed" value="true" />
+      <created>1746210856126</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1746210856126</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Страница с товарами, стили, репозиторий товаров, контроллер товаров и сервис товаров">
+      <option name="closed" value="true" />
+      <created>1746291855107</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1746291855107</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Добавил сортировку по имени и цене, доработал соответственно шаблон товаров, стили">
+      <option name="closed" value="true" />
+      <created>1746299494503</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1746299494503</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Добавил логику добавления товара в корзину и соответственно настроил под это интерфейс">
+      <option name="closed" value="true" />
+      <created>1746383904584</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1746383904584</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Карточка товара и переход на карточку товара. Логика добавлеия удаления товара из корзины">
+      <option name="closed" value="true" />
+      <created>1746386329415</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1746386329415</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Общая панель с кнопками перехода в корзину, заказы, домой. Картинки и стили навесил соответственно. И заглушки под страницы">
+      <option name="closed" value="true" />
+      <created>1746461414136</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1746461414136</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Отображение корзины, заказов, конкретного оплаченного заказа. Логика оплаты. Добавил соответствующие стили.">
+      <option name="closed" value="true" />
+      <created>1746471523535</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1746471523535</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Микроправки текста на страницах">
+      <option name="closed" value="true" />
+      <created>1746546996165</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1746546996165</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Тесты на ProductService с использованием TestContainers">
+      <option name="closed" value="true" />
+      <created>1746552427627</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1746552427627</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Тесты на OrderService с использованием TestContainers">
+      <option name="closed" value="true" />
+      <created>1746556469708</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1746556469708</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Тесты на PayService с использованием TestContainers">
+      <option name="closed" value="true" />
+      <created>1746557094610</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1746557094610</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Настройка, чтобы тесты проходили и не было проблем с потерей соединения">
+      <option name="closed" value="true" />
+      <created>1746558261557</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1746558261557</updated>
+    </task>
+    <task id="LOCAL-00014" summary="тесты на контроллеры + небольшой рефактор кода">
+      <option name="closed" value="true" />
+      <created>1746635670662</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1746635670662</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Рефактор + докер + readme + правка тестов">
+      <option name="closed" value="true" />
+      <created>1746644889885</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1746644889885</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Переезд на реактивный стек (WebFlux, r2dbc) + настройки docker-compose и luquibase">
+      <option name="closed" value="true" />
+      <created>1747507347808</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1747507347808</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Устранил дефекты связанные с наличием block() в коде + настройка luquibase + настройка конфигураций">
+      <option name="closed" value="true" />
+      <created>1747682018321</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1747682018321</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Убрал пока тесты, поправил только ProductControllerTest. Настроил конфигурацию для подключения к БД для тестов и luquibase.">
+      <option name="closed" value="true" />
+      <created>1747764232611</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1747764232611</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Восстановил тесты HomeControllerTest + добавил jsoup для парса страницы для подсчета количества товаров на странице">
+      <option name="closed" value="true" />
+      <created>1747766603617</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1747766603617</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Восстановил тесты OrderControllerTest">
+      <option name="closed" value="true" />
+      <created>1747773048305</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1747773048305</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Восстановил тесты PayControllerTest">
+      <option name="closed" value="true" />
+      <created>1747773346834</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1747773346834</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Восстановил тесты OrderServiceTest">
+      <option name="closed" value="true" />
+      <created>1747848364446</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1747848364446</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Правки OrderServiceTest + восстановил PayServiceTest">
+      <option name="closed" value="true" />
+      <created>1747849409133</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1747849409133</updated>
+    </task>
+    <task id="LOCAL-00024" summary="восстановил ProductServiceTest">
+      <option name="closed" value="true" />
+      <created>1747850485372</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1747850485372</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Обновил readme и настройки запуска приложения">
+      <option name="closed" value="true" />
+      <created>1747852557588</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1747852557588</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Добавил liquibase" />
+    <MESSAGE value="Создал модель данных, добавил конфиг Thymeleaf, добавил docker-compose для postgreesql, настроил changeLog и скрипты под текущую модель данных" />
+    <MESSAGE value="Страница с товарами, стили, репозиторий товаров, контроллер товаров и сервис товаров" />
+    <MESSAGE value="Добавил сортировку по имени и цене, доработал соответственно шаблон товаров, стили" />
+    <MESSAGE value="Добавил логику добавления товара в корзину и соответственно настроил под это интерфейс" />
+    <MESSAGE value="Карточка товара и переход на карточку товара. Логика добавлеия удаления товара из корзины" />
+    <MESSAGE value="Общая панель с кнопками перехода в корзину, заказы, домой. Картинки и стили навесил соответственно. И заглушки под страницы" />
+    <MESSAGE value="Отображение корзины, заказов, конкретного оплаченного заказа. Логика оплаты. Добавил соответствующие стили." />
+    <MESSAGE value="Микроправки текста на страницах" />
+    <MESSAGE value="Тесты на ProductService с использованием TestContainers" />
+    <MESSAGE value="Тесты на OrderService с использованием TestContainers" />
+    <MESSAGE value="Тесты на PayService с использованием TestContainers" />
+    <MESSAGE value="Настройка, чтобы тесты проходили и не было проблем с потерей соединения" />
+    <MESSAGE value="тесты на контроллеры + небольшой рефактор кода" />
+    <MESSAGE value="Рефактор + докер + readme + правка тестов" />
+    <MESSAGE value="Переезд на реактивный стек (WebFlux, r2dbc) + настройки docker-compose и luquibase" />
+    <MESSAGE value="Устранил дефекты связанные с наличием block() в коде + настройка luquibase + настройка конфигураций" />
+    <MESSAGE value="Убрал пока тесты, поправил только ProductControllerTest. Настроил конфигурацию для подключения к БД для тестов и luquibase." />
+    <MESSAGE value="Восстановил тесты HomeControllerTest + добавил jsoup для парса страницы для подсчета количества товаров на странице" />
+    <MESSAGE value="Восстановил тесты OrderControllerTest" />
+    <MESSAGE value="Восстановил тесты PayControllerTest" />
+    <MESSAGE value="Восстановил тесты OrderServiceTest" />
+    <MESSAGE value="Правки OrderServiceTest + восстановил PayServiceTest" />
+    <MESSAGE value="восстановил ProductServiceTest" />
+    <MESSAGE value="Обновил readme и настройки запуска приложения" />
+    <option name="LAST_COMMIT_MESSAGE" value="Обновил readme и настройки запуска приложения" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/myShop$MyShopApplication.ic" NAME="MyShopApplication Coverage Results" MODIFIED="1746638229442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>ru.mityunin.myShop.*</FILTER>
+    </SUITE>
+  </component>
+</project>
