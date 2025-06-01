@@ -1,6 +1,15 @@
-version: '3.8'
-
 services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
   app:
     build:
       context: ./webModule
@@ -10,6 +19,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       - SPRING_R2DBC_URL=r2dbc:postgresql://postgres:5432/myShop
       - SPRING_R2DBC_USERNAME=springuser
@@ -17,6 +28,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/myShop
       - SPRING_DATASOURCE_USERNAME=springuser
       - SPRING_DATASOURCE_PASSWORD=springpass
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
   postgres:
     image: postgres:latest
     container_name: postgres_container
@@ -37,3 +50,4 @@ services:
 
 volumes:
   pgdata:
+  redis_data:
