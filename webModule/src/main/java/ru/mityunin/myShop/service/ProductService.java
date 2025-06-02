@@ -3,6 +3,7 @@ package ru.mityunin.myShop.service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -14,24 +15,57 @@ import ru.mityunin.myShop.repository.ProductCustomRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.util.List;
 
 @Service
 public class ProductService {
+
+    private static final String PRODUCT_CACHE_PREFIX = "products:";
+    private static final Duration CACHE_TTL = Duration.ofMinutes(1);
 
     private ProductRepository productRepository;
     private ProductCustomRepository productCustomRepository;
     private OrderRepository orderRepository;
     private OrderService orderService;
+    private final ReactiveRedisTemplate<String, Object> redisTemplate;
 
-    public ProductService(ProductRepository productRepository, ProductCustomRepository productCustomRepository, OrderRepository orderRepository, OrderService orderService) {
+    public ProductService(ProductRepository productRepository, ProductCustomRepository productCustomRepository, OrderRepository orderRepository, OrderService orderService, ReactiveRedisTemplate<String, Object> redisTemplate) {
         this.productRepository = productRepository;
         this.productCustomRepository = productCustomRepository;
         this.orderRepository = orderRepository;
         this.orderService = orderService;
+        this.redisTemplate = redisTemplate;
     }
 
+    private Mono<Boolean> cacheProducts(String key, List<Product> products) {
+        return redisTemplate.opsForValue()
+                .set(key, products, CACHE_TTL);
+    }
 
     public Flux<Product> findAll(FilterRequest filterRequest) {
+        String cacheKey = PRODUCT_CACHE_PREFIX + filterRequest.cacheKey();
+        return getFromCache(cacheKey)
+                .switchIfEmpty(
+                        getFromDB(filterRequest)
+                                .collectList()
+                                .flatMapMany(products ->
+                                        cacheProducts(cacheKey, products).thenMany(Flux.fromIterable(products)
+                                )));
+    }
+    public Flux<Product> getFromCache(String cacheKey) {
+        return redisTemplate.opsForValue().get(cacheKey)
+                .flatMapMany(obj -> {
+                    if (obj instanceof List<?> list) {
+                        return Flux.fromIterable(list)
+                                .filter(Product.class::isInstance)
+                                .map(Product.class::cast)
+                                .flatMap(this::setCountInBasketFor);
+                    }
+                    return Flux.empty();
+                });
+    }
+    public Flux<Product> getFromDB(FilterRequest filterRequest) {
         Sort sort = Sort.by(Sort.Direction.fromString(filterRequest.sortDirection()), filterRequest.sortBy());
         Pageable pageable = PageRequest.of(filterRequest.page(), filterRequest.size(), sort);
         Flux<Product> products = filterRequest.textFilter() == null || filterRequest.textFilter().isBlank() ?

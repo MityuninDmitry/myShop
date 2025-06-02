@@ -26,6 +26,10 @@ public class FilterRequest {
         this.sortDirection = sortDirection;
     }
 
+    public String cacheKey() {
+        return String.format(":page:%d:size:%d:textFilter:%s:sortBy:%s:sortDirection:%s", page, size, textFilter != null ? textFilter : "all", sortBy, sortDirection);
+    }
+
     @Override
     public String toString() {
         return "page: " + page + ", size: " + size + ", textFilter: " + textFilter + ", sortBy: " + sortBy + ", sortDirection: " + sortDirection;

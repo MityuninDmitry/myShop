@@ -4,60 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Обновил readme и настройки запуска приложения">
-      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/bd_schema.png" beforeDir="false" />
+    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Добавил реактивный редис в приложение и запуск через докер">
+      <change afterPath="$PROJECT_DIR$/webModule/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/RedisConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/RedisTestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/MyShopApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/configuration/R2dbcConfiguration.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/configuration/ThymeleafConfiguration.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/controller/DTO/FilterRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/controller/HomeController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/controller/OrderController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/controller/PayController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/controller/ProductController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/ActionWithProduct.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/Order.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/OrderStatus.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/OrderedProduct.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/Product.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/converter/OrderedProductReadConverter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/model/converter/OrderedProductWriteConverter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/repository/OrderRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/repository/ProductCustomRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/repository/ProductRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/service/OrderService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/service/PayService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ru/mityunin/myShop/service/ProductService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/db.changelog-master.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/scripts/001-init-products-schema.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/scripts/002-init-orders-schema.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/styles.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/basket-icon.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/home-icon.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/orders-icon.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/Basket.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/Order.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/Orders.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/Product.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/Products.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/fragments/common.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/SpringBootPostgreSQLBase.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/TestMyShopApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/TestcontainersConfiguration.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/controller/HomeControllerTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/controller/OrderControllerTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/controller/PayControllerTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/controller/ProductControllerTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/service/OrderServiceTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/service/PayServiceTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ru/mityunin/myShop/service/ProductServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/MyShopApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/MyShopApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/DTO/FilterRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/DTO/FilterRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,72 +80,77 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.MyShopApplication.executor&quot;: &quot;Run&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;JUnit.HomeControllerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.HomeControllerTest.getProducts_shouldReturnDefaultProducts.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.HomeControllerTest.getProducts_shouldReturnZeroProducts.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.HomeControllerTest.shouldReturnDefaultProducts.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.HomeControllerTest.shouldReturnZeroProducts.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MyShopApplicationTests.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.changeProductInBasketWithNoNameSource.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.changeProductInBasketWithoutSource.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.decreaseProductInBasketFromBasket.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.decreaseProductInBasketFromDifferentSources.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.getEmptyBasket.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.getOrderInfo.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.getOrders.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.getOrders_OnlyPaidOrdersAndExactSize.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.increaseProductInBasket.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.increaseProductInBasketFromBasket.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.increaseProductInBasketFromDifferentSources.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.increaseProductInBasketFromProduct.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderControllerTest.increaseProductInBasketFromProducts.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderServiceTest.shouldChangeOrderAndCreateNewBasket.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderServiceTest.shouldDecreaseCountAndSetNewTotalPriceBasket.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderServiceTest.shouldFindOrdersByDifferentOrderStatus.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderServiceTest.shouldGetOrderTotalPriceByOrderId.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderServiceTest.shouldGetProductsByOrder.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderServiceTest.shouldGetTotalPriceOrders.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderServiceTest.shouldIncreaseCountAndSetNewTotalPriceBasket.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderServiceTest.shouldReturnBasketWhenBasketExists.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.OrderServiceTest.shouldReturnBasketWhenBasketNotExists.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PayControllerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PayControllerTest.payOrder.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PayControllerTest.payOrderWithOrderId.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PayServiceTest.shouldSetPaidForOrder.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ProductControllerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ProductControllerTest.getProductPage.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ProductServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ProductServiceTest.shouldGetProductByProductId.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ProductServiceTest.shouldReturnExactCountProductsByDifferentFilters.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ProductServiceTest.shouldReturnExactCountProductsByFilters.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ProductServiceTest.shouldReturnNotZeroCountInBasketWhenProductInBasket.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ProductServiceTest.shouldReturnZeroCountInBasketWhenProductNotInBasket.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TestcontainersTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.java in myShop.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.myShop [compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.myShop [deploy].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.myShop [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.myShop [org.springframework.boot:spring-boot-maven-plugin:3.4.5:run].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.myShop [org.springframework.boot:spring-boot-maven-plugin:3.4.5:stop].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.myShop [org.springframework.boot:spring-boot-maven-plugin:3.4.5:test-run].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.myShop [package].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.myShop [test].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/dmitrymityunin/IdeaProjects/myShop/src/main/resources/templates&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.MyShopApplication.executor": "Run",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JUnit.HomeControllerTest.executor": "Run",
+    "JUnit.HomeControllerTest.getProducts_shouldReturnDefaultProducts.executor": "Run",
+    "JUnit.HomeControllerTest.getProducts_shouldReturnZeroProducts.executor": "Run",
+    "JUnit.HomeControllerTest.shouldReturnDefaultProducts.executor": "Run",
+    "JUnit.HomeControllerTest.shouldReturnZeroProducts.executor": "Run",
+    "JUnit.MyShopApplicationTests.executor": "Run",
+    "JUnit.OrderControllerTest.changeProductInBasketWithNoNameSource.executor": "Run",
+    "JUnit.OrderControllerTest.changeProductInBasketWithoutSource.executor": "Run",
+    "JUnit.OrderControllerTest.decreaseProductInBasketFromBasket.executor": "Run",
+    "JUnit.OrderControllerTest.decreaseProductInBasketFromDifferentSources.executor": "Run",
+    "JUnit.OrderControllerTest.executor": "Run",
+    "JUnit.OrderControllerTest.getEmptyBasket.executor": "Run",
+    "JUnit.OrderControllerTest.getOrderInfo.executor": "Run",
+    "JUnit.OrderControllerTest.getOrders.executor": "Run",
+    "JUnit.OrderControllerTest.getOrders_OnlyPaidOrdersAndExactSize.executor": "Run",
+    "JUnit.OrderControllerTest.increaseProductInBasket.executor": "Run",
+    "JUnit.OrderControllerTest.increaseProductInBasketFromBasket.executor": "Run",
+    "JUnit.OrderControllerTest.increaseProductInBasketFromDifferentSources.executor": "Run",
+    "JUnit.OrderControllerTest.increaseProductInBasketFromProduct.executor": "Run",
+    "JUnit.OrderControllerTest.increaseProductInBasketFromProducts.executor": "Run",
+    "JUnit.OrderServiceTest.executor": "Run",
+    "JUnit.OrderServiceTest.shouldChangeOrderAndCreateNewBasket.executor": "Run",
+    "JUnit.OrderServiceTest.shouldDecreaseCountAndSetNewTotalPriceBasket.executor": "Run",
+    "JUnit.OrderServiceTest.shouldFindOrdersByDifferentOrderStatus.executor": "Run",
+    "JUnit.OrderServiceTest.shouldGetOrderTotalPriceByOrderId.executor": "Run",
+    "JUnit.OrderServiceTest.shouldGetProductsByOrder.executor": "Run",
+    "JUnit.OrderServiceTest.shouldGetTotalPriceOrders.executor": "Run",
+    "JUnit.OrderServiceTest.shouldIncreaseCountAndSetNewTotalPriceBasket.executor": "Run",
+    "JUnit.OrderServiceTest.shouldReturnBasketWhenBasketExists.executor": "Run",
+    "JUnit.OrderServiceTest.shouldReturnBasketWhenBasketNotExists.executor": "Run",
+    "JUnit.PayControllerTest.executor": "Run",
+    "JUnit.PayControllerTest.payOrder.executor": "Run",
+    "JUnit.PayControllerTest.payOrderWithOrderId.executor": "Run",
+    "JUnit.PayServiceTest.shouldSetPaidForOrder.executor": "Run",
+    "JUnit.ProductControllerTest.executor": "Run",
+    "JUnit.ProductControllerTest.getProductPage.executor": "Run",
+    "JUnit.ProductServiceTest.executor": "Run",
+    "JUnit.ProductServiceTest.shouldGetProductByProductId.executor": "Run",
+    "JUnit.ProductServiceTest.shouldReturnExactCountProductsByDifferentFilters.executor": "Run",
+    "JUnit.ProductServiceTest.shouldReturnExactCountProductsByFilters.executor": "Run",
+    "JUnit.ProductServiceTest.shouldReturnNotZeroCountInBasketWhenProductInBasket.executor": "Run",
+    "JUnit.ProductServiceTest.shouldReturnZeroCountInBasketWhenProductNotInBasket.executor": "Run",
+    "JUnit.TestcontainersTest.executor": "Run",
+    "JUnit.java in myShop.executor": "Run",
+    "JUnit.java in webModule.executor": "Run",
+    "Maven.myShop [compile].executor": "Run",
+    "Maven.myShop [deploy].executor": "Run",
+    "Maven.myShop [install].executor": "Run",
+    "Maven.myShop [org.springframework.boot:spring-boot-maven-plugin:3.4.5:run].executor": "Run",
+    "Maven.myShop [org.springframework.boot:spring-boot-maven-plugin:3.4.5:stop].executor": "Run",
+    "Maven.myShop [org.springframework.boot:spring-boot-maven-plugin:3.4.5:test-run].executor": "Run",
+    "Maven.myShop [package].executor": "Run",
+    "Maven.myShop [test].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/dmitrymityunin/IdeaProjects/myShop/webModule",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "run.code.analysis.last.selected.profile": "pProject Default"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/webModule" />
       <recent name="$PROJECT_DIR$/src/main/resources/templates" />
       <recent name="$PROJECT_DIR$/src/main/resources/db/changelog/scripts" />
     </key>
@@ -194,7 +162,7 @@
       <recent name="$PROJECT_DIR$/src/main/resources/static" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.java in myShop">
+  <component name="RunManager" selected="JUnit.OrderServiceTest (1)">
     <configuration name="MyShopApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <envs>
         <env name="SPRING_R2DBC_PASSWORD" value="springpass" />
@@ -216,8 +184,23 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="OrderServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="myShop" />
+    <configuration name="OrderControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="webModule" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ru.mityunin.myShop.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="ru.mityunin.myShop.controller" />
+      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.controller.OrderControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderServiceTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="webModule" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="ru.mityunin.myShop.service.*" />
@@ -231,37 +214,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ProductServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="myShop" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="ru.mityunin.myShop.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="ru.mityunin.myShop.service" />
-      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.service.ProductServiceTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ProductServiceTest.shouldReturnExactCountProductsByDifferentFilters" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="myShop" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="ru.mityunin.myShop.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="ru.mityunin.myShop.service" />
-      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.service.ProductServiceTest" />
-      <option name="METHOD_NAME" value="shouldReturnExactCountProductsByDifferentFilters" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="java in myShop" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="myShop" />
       <option name="TEST_OBJECT" value="directory" />
@@ -270,20 +222,28 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="java in webModule" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="webModule" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/webModule/src/test/java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.MyShopApplication" />
-      <item itemvalue="JUnit.OrderServiceTest" />
-      <item itemvalue="JUnit.ProductServiceTest" />
-      <item itemvalue="JUnit.ProductServiceTest.shouldReturnExactCountProductsByDifferentFilters" />
+      <item itemvalue="JUnit.OrderControllerTest" />
+      <item itemvalue="JUnit.OrderServiceTest (1)" />
+      <item itemvalue="JUnit.java in webModule" />
       <item itemvalue="JUnit.java in myShop" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.OrderServiceTest (1)" />
+        <item itemvalue="JUnit.java in webModule" />
+        <item itemvalue="JUnit.OrderControllerTest" />
         <item itemvalue="JUnit.java in myShop" />
         <item itemvalue="Application.MyShopApplication" />
-        <item itemvalue="JUnit.OrderServiceTest" />
-        <item itemvalue="JUnit.ProductServiceTest" />
-        <item itemvalue="JUnit.ProductServiceTest.shouldReturnExactCountProductsByDifferentFilters" />
       </list>
     </recent_temporary>
   </component>
@@ -496,7 +456,23 @@
       <option name="project" value="LOCAL" />
       <updated>1747852557588</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Переделка на мультимодульный проект">
+      <option name="closed" value="true" />
+      <created>1748798380946</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1748798380946</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Добавил реактивный редис в приложение и запуск через докер">
+      <option name="closed" value="true" />
+      <created>1748800600545</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1748800600545</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -511,8 +487,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Добавил liquibase" />
-    <MESSAGE value="Создал модель данных, добавил конфиг Thymeleaf, добавил docker-compose для postgreesql, настроил changeLog и скрипты под текущую модель данных" />
     <MESSAGE value="Страница с товарами, стили, репозиторий товаров, контроллер товаров и сервис товаров" />
     <MESSAGE value="Добавил сортировку по имени и цене, доработал соответственно шаблон товаров, стили" />
     <MESSAGE value="Добавил логику добавления товара в корзину и соответственно настроил под это интерфейс" />
@@ -536,7 +510,9 @@
     <MESSAGE value="Правки OrderServiceTest + восстановил PayServiceTest" />
     <MESSAGE value="восстановил ProductServiceTest" />
     <MESSAGE value="Обновил readme и настройки запуска приложения" />
-    <option name="LAST_COMMIT_MESSAGE" value="Обновил readme и настройки запуска приложения" />
+    <MESSAGE value="Переделка на мультимодульный проект" />
+    <MESSAGE value="Добавил реактивный редис в приложение и запуск через докер" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавил реактивный редис в приложение и запуск через докер" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/myShop$MyShopApplication.ic" NAME="MyShopApplication Coverage Results" MODIFIED="1746638229442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">

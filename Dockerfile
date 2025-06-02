@@ -2,10 +2,11 @@ FROM openjdk:21-jdk
 
 WORKDIR /app
 
-# Копируем Maven Wrapper (обязательно!)
+# Копируем
+COPY pom.xml .
 COPY .mvn .mvn
 COPY mvnw .
-COPY pom.xml .
+COPY webModule/pom.xml webModule/pom.xml
 
 # Даем права на выполнение mvnw
 RUN chmod +x mvnw
@@ -14,11 +15,13 @@ RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline -B
 
 # Копируем исходный код
-COPY src src
+COPY webModule/src webModule/src
 
 # Собираем приложение (используем mvnw вместо mvn)
 RUN ./mvnw clean package -DskipTests
 
+WORKDIR /app/webModule
+
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "target/myShop-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "target/webModule-0.0.1-SNAPSHOT.jar"]
