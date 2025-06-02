@@ -11,7 +11,7 @@ public class FilterRequest {
     private String sortDirection;
 
     public FilterRequest() {
-        page = 1;
+        page = 0;
         size = 10;
         textFilter = "";
         sortBy = "name";

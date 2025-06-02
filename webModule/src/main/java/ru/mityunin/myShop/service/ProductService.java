@@ -42,18 +42,22 @@ public class ProductService {
         return redisTemplate.opsForValue()
                 .set(key, products, CACHE_TTL);
     }
+    private Mono<Boolean> cacheProduct(String key, Product product) {
+        return redisTemplate.opsForValue()
+                .set(key, product, CACHE_TTL);
+    }
 
     public Flux<Product> findAll(FilterRequest filterRequest) {
         String cacheKey = PRODUCT_CACHE_PREFIX + filterRequest.cacheKey();
-        return getFromCache(cacheKey)
+        return findAllFromCache(cacheKey)
                 .switchIfEmpty(
-                        getFromDB(filterRequest)
+                        findAllFromDB(filterRequest)
                                 .collectList()
                                 .flatMapMany(products ->
                                         cacheProducts(cacheKey, products).thenMany(Flux.fromIterable(products)
                                 )));
     }
-    public Flux<Product> getFromCache(String cacheKey) {
+    public Flux<Product> findAllFromCache(String cacheKey) {
         return redisTemplate.opsForValue().get(cacheKey)
                 .flatMapMany(obj -> {
                     if (obj instanceof List<?> list) {
@@ -65,7 +69,7 @@ public class ProductService {
                     return Flux.empty();
                 });
     }
-    public Flux<Product> getFromDB(FilterRequest filterRequest) {
+    public Flux<Product> findAllFromDB(FilterRequest filterRequest) {
         Sort sort = Sort.by(Sort.Direction.fromString(filterRequest.sortDirection()), filterRequest.sortBy());
         Pageable pageable = PageRequest.of(filterRequest.page(), filterRequest.size(), sort);
         Flux<Product> products = filterRequest.textFilter() == null || filterRequest.textFilter().isBlank() ?
@@ -110,6 +114,15 @@ public class ProductService {
     }
 
     public Mono<Product> getProductBy(Long id) {
+        String cacheKey = PRODUCT_CACHE_PREFIX + ":" + id;
+        return getProductByFromCache(cacheKey)
+                .switchIfEmpty(
+                        getProductByFromDB(id)
+                                .flatMap(product ->
+                                        cacheProduct(cacheKey, product).then(Mono.fromCallable(() -> product)
+                                        )));
+    }
+    public Mono<Product> getProductByFromDB(Long id) {
         return productRepository.findById(id)
                 .flatMap(product ->
                         setCountInBasketFor(product)
@@ -117,5 +130,17 @@ public class ProductService {
                                     return Mono.just(product); // Возвращаем продукт без количества при ошибке
                                 })
                 );
+    }
+    public Mono<Product> getProductByFromCache(String cacheKey) {
+        return redisTemplate.opsForValue().get(cacheKey)
+                .flatMap(obj -> {
+                    if (obj instanceof Product) {
+                        return Mono.fromCallable(() -> obj)
+                                .filter(Product.class::isInstance)
+                                .map(Product.class::cast)
+                                .flatMap(this::setCountInBasketFor);
+                    }
+                    return Mono.empty();
+                });
     }
 }
