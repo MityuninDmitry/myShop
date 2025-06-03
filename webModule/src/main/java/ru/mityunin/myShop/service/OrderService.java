@@ -1,5 +1,8 @@
 package ru.mityunin.myShop.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -9,16 +12,28 @@ import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.util.List;
 
 @Service
 public class OrderService {
 
+    private static final String CACHE_PREFIX = "orders:";
+    private static final Duration CACHE_TTL = Duration.ofMinutes(1);
+
     private OrderRepository orderRepository;
     private ProductRepository productRepository;
+    private final ReactiveRedisTemplate<String, Object> redisTemplate;
 
-    public OrderService(OrderRepository orderRepository, ProductRepository productRepository) {
+    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, ReactiveRedisTemplate<String, Object> redisTemplate) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
+        this.redisTemplate = redisTemplate;
+    }
+
+    private Mono<Boolean> cacheProducts(Mono<String> keyMono, List<Product> products) {
+        return keyMono.flatMap(key -> redisTemplate.opsForValue()
+                .set(key, products, CACHE_TTL));
     }
 
     public Flux<Order> findOrdersBy(OrderStatus orderStatus) {
@@ -31,6 +46,36 @@ public class OrderService {
     }
 
     public Flux<Product> getProductsByOrder(Mono<Order> orderMono) {
+        Mono<String> cackeKeyMono = orderMono.map(order -> CACHE_PREFIX + ":" + order.getId().toString());
+
+        return getProductsByOrderFromCache(cackeKeyMono, orderMono)
+                .switchIfEmpty(
+                        getProductsByOrderFromDB(orderMono)
+                                .collectList()
+                                .flatMapMany(products ->
+                                        cacheProducts(cackeKeyMono, products).thenMany(Flux.fromIterable(products)
+                                        )));
+    }
+
+    public Flux<Product> getProductsByOrderFromCache(Mono<String> cacheKeyMono,Mono<Order> orderMono) {
+        return cacheKeyMono.flatMapMany(cacheKey -> Mono.zip(
+                redisTemplate.opsForValue().get(cacheKey), orderMono)
+                .flatMapMany(tuple -> {
+                    if (tuple.getT1() instanceof List<?> list) {
+                            return Flux.fromIterable(list)
+                                    .filter(Product.class::isInstance)
+                                    .map(Product.class::cast)
+                                    .map(product -> {
+                                        Integer count = tuple.getT2().countInOrderedProductWith(product.getId());
+                                        product.setCountInBasket(count);
+                                        return product;
+                                    });
+                        }
+                        return Flux.empty();
+                })
+        );
+    }
+    public Flux<Product> getProductsByOrderFromDB(Mono<Order> orderMono) {
         return orderMono.flatMapMany(order ->
                 productRepository.findAll()
                         .filterWhen(

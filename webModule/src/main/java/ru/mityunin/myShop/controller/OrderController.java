@@ -41,7 +41,7 @@ public class OrderController {
         Flux<Order> orders = orderService.findOrdersBy(OrderStatus.PAID);
 
         return orderService.getTotalPriceOrders(orders)
-                .map(totalPrice -> Rendering.view("orders")
+                .map(totalPrice -> Rendering.view("Orders")
                         .modelAttribute("orders", orders)
                         .modelAttribute("totalPrice", totalPrice)
                         .build()

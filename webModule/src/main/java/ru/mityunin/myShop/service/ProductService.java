@@ -1,5 +1,7 @@
 package ru.mityunin.myShop.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,9 +20,9 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
 
+
 @Service
 public class ProductService {
-
     private static final String PRODUCT_CACHE_PREFIX = "products:";
     private static final Duration CACHE_TTL = Duration.ofMinutes(1);
 
