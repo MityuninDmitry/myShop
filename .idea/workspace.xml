@@ -4,24 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Добавил реактивный редис в приложение и запуск через докер">
-      <change afterPath="$PROJECT_DIR$/webModule/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/RedisConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/RedisTestController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/MyShopApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/MyShopApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/DTO/FilterRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/DTO/FilterRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" afterDir="false" />
-    </list>
+    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Добавил кеширование продуктов в заказе по требованиям + фикс бага, что не открывается страница" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -104,6 +87,7 @@
     "JUnit.OrderControllerTest.increaseProductInBasketFromDifferentSources.executor": "Run",
     "JUnit.OrderControllerTest.increaseProductInBasketFromProduct.executor": "Run",
     "JUnit.OrderControllerTest.increaseProductInBasketFromProducts.executor": "Run",
+    "JUnit.OrderServiceTest (1).executor": "Run",
     "JUnit.OrderServiceTest.executor": "Run",
     "JUnit.OrderServiceTest.shouldChangeOrderAndCreateNewBasket.executor": "Run",
     "JUnit.OrderServiceTest.shouldDecreaseCountAndSetNewTotalPriceBasket.executor": "Run",
@@ -472,7 +456,31 @@
       <option name="project" value="LOCAL" />
       <updated>1748800600545</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Проработка структуры проекта и его настройка + кеширование в редисе">
+      <option name="closed" value="true" />
+      <created>1748889193632</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1748889193632</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Прокинул в кеш информацию о товаре">
+      <option name="closed" value="true" />
+      <created>1748890599825</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1748890599825</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Добавил кеширование продуктов в заказе по требованиям + фикс бага, что не открывается страница">
+      <option name="closed" value="true" />
+      <created>1748971091965</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1748971091965</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -487,9 +495,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Страница с товарами, стили, репозиторий товаров, контроллер товаров и сервис товаров" />
-    <MESSAGE value="Добавил сортировку по имени и цене, доработал соответственно шаблон товаров, стили" />
-    <MESSAGE value="Добавил логику добавления товара в корзину и соответственно настроил под это интерфейс" />
     <MESSAGE value="Карточка товара и переход на карточку товара. Логика добавлеия удаления товара из корзины" />
     <MESSAGE value="Общая панель с кнопками перехода в корзину, заказы, домой. Картинки и стили навесил соответственно. И заглушки под страницы" />
     <MESSAGE value="Отображение корзины, заказов, конкретного оплаченного заказа. Логика оплаты. Добавил соответствующие стили." />
@@ -512,7 +517,10 @@
     <MESSAGE value="Обновил readme и настройки запуска приложения" />
     <MESSAGE value="Переделка на мультимодульный проект" />
     <MESSAGE value="Добавил реактивный редис в приложение и запуск через докер" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавил реактивный редис в приложение и запуск через докер" />
+    <MESSAGE value="Проработка структуры проекта и его настройка + кеширование в редисе" />
+    <MESSAGE value="Прокинул в кеш информацию о товаре" />
+    <MESSAGE value="Добавил кеширование продуктов в заказе по требованиям + фикс бага, что не открывается страница" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавил кеширование продуктов в заказе по требованиям + фикс бага, что не открывается страница" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/myShop$MyShopApplication.ic" NAME="MyShopApplication Coverage Results" MODIFIED="1746638229442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
