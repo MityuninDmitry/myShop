@@ -6,7 +6,6 @@ info:
 servers:
   - url: http://localhost:8081
     description: Local development server
-
 paths:
   /balance:
     get:
@@ -22,7 +21,6 @@ paths:
                   balance:
                     type: number
                     format: float
-                    example: 1000.50
                     description: Текущий баланс пользователя
         '500':
           description: Ошибка сервера при получении баланса
@@ -40,7 +38,6 @@ paths:
                   type: number
                   format: float
                   minimum: 0.01
-                  example: 500.00
                   description: Сумма для пополнения баланса
               required:
                 - amount
@@ -55,7 +52,6 @@ paths:
                   new_balance:
                     type: number
                     format: float
-                    example: 1500.50
                     description: Новый баланс после пополнения
         '400':
           description: Неверный запрос (некорректная сумма)
@@ -76,7 +72,6 @@ paths:
                   type: number
                   format: float
                   minimum: 0.01
-                  example: 200.00
                   description: Сумма заказа
               required:
                 - amount
@@ -86,16 +81,37 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  new_balance:
-                    type: number
-                    format: float
-                    example: 800.50
-                    description: Новый баланс после оплаты
+                $ref: '#/components/schemas/PaymentResponse'
         '400':
           description: Неверный запрос (некорректная сумма)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
         '406':
           description: Недостаточно средств на балансе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
         '500':
           description: Ошибка сервера при обработке платежа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+
+components:
+  schemas:
+    PaymentResponse:
+      type: object
+      properties:
+        processed:
+          type: boolean
+          description: Флаг успешной обработки платежа
+        description:
+          type: string
+          nullable: true
+          description: Код ошибки
+      required:
+        - processed

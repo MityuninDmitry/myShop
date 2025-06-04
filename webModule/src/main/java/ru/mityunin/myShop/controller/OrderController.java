@@ -20,11 +20,15 @@ public class OrderController {
     }
 
     @GetMapping("/basket")
-    public Mono<Rendering> getBasket() {
+    public Mono<Rendering> getBasket(ServerWebExchange exchange) {
+
+        String errorMessage = exchange.getRequest().getQueryParams().getFirst("error");
+
         Rendering r = Rendering.view("Basket")
                 .modelAttribute("products", orderService.getBasketProducts())
                 .modelAttribute("totalPrice", orderService.getBasketPrice())
                 .modelAttribute("order", orderService.getBasket())
+                .modelAttribute("paymentError", errorMessage != null ? errorMessage : "")
                 .build();
         return Mono.just(r);
     }

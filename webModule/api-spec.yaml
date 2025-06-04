@@ -1,0 +1,117 @@
+openapi: 3.0.0
+info:
+  title: Payment Service API
+  description: API для управления балансом и оплаты заказов
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081
+    description: Local development server
+paths:
+  /balance:
+    get:
+      summary: Получить текущий баланс
+      responses:
+        '200':
+          description: Успешное получение баланса
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: number
+                    format: float
+                    description: Текущий баланс пользователя
+        '500':
+          description: Ошибка сервера при получении баланса
+
+    post:
+      summary: Пополнить баланс
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  minimum: 0.01
+                  description: Сумма для пополнения баланса
+              required:
+                - amount
+      responses:
+        '200':
+          description: Баланс успешно пополнен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  new_balance:
+                    type: number
+                    format: float
+                    description: Новый баланс после пополнения
+        '400':
+          description: Неверный запрос (некорректная сумма)
+        '500':
+          description: Ошибка сервера при пополнении баланса
+
+  /payment:
+    post:
+      summary: Оплатить заказ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  minimum: 0.01
+                  description: Сумма заказа
+              required:
+                - amount
+      responses:
+        '200':
+          description: Заказ успешно оплачен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '400':
+          description: Неверный запрос (некорректная сумма)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '406':
+          description: Недостаточно средств на балансе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+        '500':
+          description: Ошибка сервера при обработке платежа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+
+components:
+  schemas:
+    PaymentResponse:
+      type: object
+      properties:
+        processed:
+          type: boolean
+          description: Флаг успешной обработки платежа
+        description:
+          type: string
+          nullable: true
+          description: Код ошибки
+      required:
+        - processed
