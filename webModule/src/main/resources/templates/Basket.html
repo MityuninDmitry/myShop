@@ -69,10 +69,26 @@
 <div class="quantity-control-container" th:unless="${#lists.isEmpty(products)}">
   <form th:action="@{/pay}" method="post" class="quantity-form d-flex align-items-center gap-2">
     <input type="hidden" name="order_id" th:value="${order.id}">
-    <button type="submit" class="quantity-btn-pay">
+    <button type="submit"
+            class="quantity-btn-pay"
+            th:disabled="${currentBalance != null and (currentBalance < 0 or (totalPrice != null and currentBalance.floatValue() <= totalPrice.floatValue()))}">
       Оформить заказ
     </button>
   </form>
+</div>
+
+<!-- Блок отображения баланса -->
+<div th:if="${currentBalance != null}">
+  <span th:if="${currentBalance < 0}" style="color: red;">
+    Сервис временно недоступен
+  </span>
+  <span th:unless="${currentBalance < 0}">
+    Деняк на балансе: <span th:text="${#numbers.formatDecimal(currentBalance, 1, 2, 'COMMA') + ' ₽'}"></span>
+  </span>
+</div>
+
+<div th:if="${paymentError}" class="alert alert-danger">
+  <span th:text="${paymentError}"></span>
 </div>
 
 <!-- Сообщение, если товаров нет -->

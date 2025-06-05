@@ -245,3 +245,9 @@
     align-items: center;
     justify-content: center;
 }
+
+.quantity-btn-pay:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #cccccc; /* Серый фон */
+}

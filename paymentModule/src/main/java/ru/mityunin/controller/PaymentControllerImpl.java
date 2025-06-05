@@ -1,5 +1,7 @@
 package ru.mityunin.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,9 @@ import ru.mityunin.server.domain.PaymentResponse;
 import ru.mityunin.service.PaymentService;
 
 @RestController
-@RequestMapping("/payment")
 public class PaymentControllerImpl implements PaymentApi {
+    private static final Logger log = LoggerFactory.getLogger(PaymentControllerImpl.class);
+
     private final PaymentService paymentService;
 
 
@@ -24,32 +27,33 @@ public class PaymentControllerImpl implements PaymentApi {
         this.paymentService = paymentService;
     }
 
-
+    @Override
     public Mono<ResponseEntity<PaymentResponse>> paymentPost(Mono<PaymentPostRequest> paymentPostRequest, ServerWebExchange exchange) {
         return paymentPostRequest.flatMap(request -> {
-            if (request.getAmount() < 0) {
+            if (request.getAmount() <= 0) {
                 PaymentResponse response = new PaymentResponse();
                 response.setDescription("Неверный запрос (некорректная сумма)");
                 response.setProcessed(false);
-                return Mono.just(ResponseEntity.badRequest().body(response));
+                return Mono.just(ResponseEntity.ok().body(response));
             }
             try {
-                paymentService.processPayment(paymentPostRequest).flatMap(processed -> {
+                log.info("before integration {} ", request);
+                return paymentService.processPayment(Mono.just(request)).flatMap(processed -> {
                     PaymentResponse response = new PaymentResponse();
                     response.setProcessed(processed);
                     if (processed) {
                         response.setDescription("Заказ успешно оплачен");
+                        log.info("response {}", response);
                         return Mono.just(ResponseEntity.ok().body(response));
                     } else {
                         response.setDescription("Недостаточно средств на балансе");
-                        return Mono.just(ResponseEntity.status(HttpStatusCode.valueOf(406)).body(response));
+                        return Mono.just(ResponseEntity.ok().body(response));
                     }
                 });
             }
             catch (Exception e) {
                 return Mono.just(ResponseEntity.internalServerError().build());
             }
-            return Mono.empty();
         });
 
     }

@@ -8,15 +8,18 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.mityunin.myShop.model.*;
 import ru.mityunin.myShop.service.OrderService;
+import ru.mityunin.myShop.service.PayService;
 
 @Controller
 @RequestMapping("/order")
 public class OrderController {
 
     private OrderService orderService;
+    private PayService payService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService,PayService payService) {
         this.orderService = orderService;
+        this.payService = payService;
     }
 
     @GetMapping("/basket")
@@ -28,8 +31,10 @@ public class OrderController {
                 .modelAttribute("products", orderService.getBasketProducts())
                 .modelAttribute("totalPrice", orderService.getBasketPrice())
                 .modelAttribute("order", orderService.getBasket())
+                .modelAttribute("currentBalance", payService.getCurrentBalance())
                 .modelAttribute("paymentError", errorMessage != null ? errorMessage : "")
                 .build();
+
         return Mono.just(r);
     }
     @GetMapping("/{id}")

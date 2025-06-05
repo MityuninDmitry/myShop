@@ -10,16 +10,19 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-  app:
+  web-app:
     build:
       context: .
       dockerfile: Dockerfile
+      target: web-app
     ports:
       - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      payment-app:
         condition: service_healthy
     environment:
       - SPRING_R2DBC_URL=r2dbc:postgresql://postgres:5432/myShop
@@ -30,6 +33,24 @@ services:
       - SPRING_DATASOURCE_PASSWORD=springpass
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
+      - PAYMENT_SERVICE_URL=http://payment-app:8081
+  payment-app:
+    container_name: payment-app
+    hostname: payment-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: payment-app
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVER_PORT=8081
+      - PAYMENT_BALANCE_ON_START=49.0
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   postgres:
     image: postgres:latest
     container_name: postgres_container

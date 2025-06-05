@@ -15,7 +15,6 @@ import ru.mityunin.server.domain.BalancePostRequest;
 import ru.mityunin.service.PaymentService;
 
 @RestController
-@RequestMapping("/balance")
 public class BalanceControllerImpl implements BalanceApi {
 
     private final PaymentService paymentService;
