@@ -1,7 +1,10 @@
 package ru.mityunin.myShop.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,28 +22,33 @@ import ru.mityunin.myShop.repository.ProductRepository;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
 public class ProductService {
     private static final String PRODUCT_CACHE_PREFIX = "products:";
-    private static final Duration CACHE_TTL = Duration.ofMinutes(1);
+    @Value("${product.cache.ttl:1m}")
+    private Duration CACHE_TTL;
 
     private ProductRepository productRepository;
     private ProductCustomRepository productCustomRepository;
     private OrderRepository orderRepository;
     private OrderService orderService;
     private final ReactiveRedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper; // Добавляем ObjectMapper
 
-    public ProductService(ProductRepository productRepository, ProductCustomRepository productCustomRepository, OrderRepository orderRepository, OrderService orderService, ReactiveRedisTemplate<String, Object> redisTemplate) {
+
+    public ProductService(ProductRepository productRepository, ProductCustomRepository productCustomRepository, OrderRepository orderRepository, OrderService orderService, ReactiveRedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
         this.productRepository = productRepository;
         this.productCustomRepository = productCustomRepository;
         this.orderRepository = orderRepository;
         this.orderService = orderService;
         this.redisTemplate = redisTemplate;
+        this.objectMapper = objectMapper;
     }
 
-    private Mono<Boolean> cacheProducts(String key, List<Product> products) {
+    public Mono<Boolean> cacheProducts(String key, List<Product> products) {
         return redisTemplate.opsForValue()
                 .set(key, products, CACHE_TTL);
     }
@@ -64,8 +72,17 @@ public class ProductService {
                 .flatMapMany(obj -> {
                     if (obj instanceof List<?> list) {
                         return Flux.fromIterable(list)
-                                .filter(Product.class::isInstance)
-                                .map(Product.class::cast)
+                                .flatMap(item -> {
+                                    if (item instanceof Product) {
+                                        return Mono.just((Product) item);
+                                    } else if (item instanceof Map) {
+                                        // Конвертируем LinkedHashMap в Product
+                                        return Mono.fromCallable(() ->
+                                                objectMapper.convertValue(item, Product.class)
+                                        );
+                                    }
+                                    return Mono.empty();
+                                })
                                 .flatMap(this::setCountInBasketFor);
                     }
                     return Flux.empty();

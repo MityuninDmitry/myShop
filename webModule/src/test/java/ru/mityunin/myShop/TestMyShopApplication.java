@@ -1,6 +1,7 @@
 package ru.mityunin.myShop;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 public class TestMyShopApplication {
 

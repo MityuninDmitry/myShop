@@ -3,6 +3,10 @@ package ru.mityunin.myShop.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.test.context.TestPropertySource;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.mityunin.myShop.SpringBootPostgreSQLBase;
@@ -11,11 +15,16 @@ import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.List;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
+@TestPropertySource(properties = "order.cache.ttl=2s")
 public class OrderServiceTest extends SpringBootPostgreSQLBase {
 
     @Autowired
@@ -24,6 +33,11 @@ public class OrderServiceTest extends SpringBootPostgreSQLBase {
     private OrderRepository orderRepository;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ReactiveRedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private ReactiveRedisConnectionFactory redisConnectionFactory;
+
 
 
     @BeforeEach
@@ -41,7 +55,21 @@ public class OrderServiceTest extends SpringBootPostgreSQLBase {
                         }
                 )).blockLast();
     }
+    @Test
+    public void cacheProducts_shouldSaveDataToRedisAndReturnTheSame() {
+        Order order = new Order();
+        order.setStatus(OrderStatus.PRE_ORDER);
+        order.setTotalPrice(BigDecimal.ZERO);
+        Mono<Order> orderMono = orderRepository.save(order);
+        String key = "orders:test_cache";
+        List<Product> products = productRepository.findAll().collectList().block();
+        orderService.cacheProducts(Mono.just(key), products).block();
 
+        List<Product> rawCached = orderService.getProductsByOrderFromCache(Mono.just(key),orderMono).collectList().block();
+
+        assertEquals(products.size(), rawCached.size());
+        assertTrue(products.containsAll(rawCached) && rawCached.containsAll(products));
+    }
 
     @Test
     public void shouldFindOrdersByDifferentOrderStatus() {
@@ -198,4 +226,26 @@ public class OrderServiceTest extends SpringBootPostgreSQLBase {
         assertEquals(BigDecimal.TEN.doubleValue(), orderService.getOrderTotalPriceBy(order.getId()).block().doubleValue());
     }
 
+    @Test
+    public void getProductsByOrderFromCacheAndNotCache() {
+        List<Product> products = productRepository.findAll().collectList().block();
+        orderService.updateProductInBasketBy(products.get(0).getId(),ActionWithProduct.INCREASE).block();
+        orderService.updateProductInBasketBy(products.get(1).getId(),ActionWithProduct.INCREASE).block();
+
+        List<Product> testProducts = orderService.getProductsByOrderId(orderService.getBasket().block().getId()).collectList().block();
+
+        assertEquals(2, testProducts.size());
+
+        String cacheKey = "orders::" + orderService.getBasket().block().getId();
+        List<Product> cachedProducts = orderService.getProductsByOrderFromCache(Mono.just(cacheKey), orderService.getBasket()).collectList().block();
+        assertThat(cachedProducts).hasSize(2);
+
+        await().atMost(10, SECONDS)
+                .pollInterval(1, SECONDS)
+                .untilAsserted(() ->
+                        assertThat(orderService.getProductsByOrderFromCache(Mono.just(cacheKey),orderService.getBasket()).collectList().block())
+                                .isEmpty()
+                );
+
+    }
 }

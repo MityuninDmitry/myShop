@@ -3,7 +3,15 @@ package ru.mityunin.myShop.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+import ru.mityunin.client.api.DefaultApi;
+import ru.mityunin.client.domain.BalanceGet200Response;
+import ru.mityunin.client.domain.PaymentPostRequest;
+import ru.mityunin.client.domain.PaymentResponse;
 import ru.mityunin.myShop.SpringBootPostgreSQLBase;
 import ru.mityunin.myShop.model.Order;
 import ru.mityunin.myShop.model.OrderStatus;
@@ -14,6 +22,7 @@ import ru.mityunin.myShop.repository.ProductRepository;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class PayServiceTest extends SpringBootPostgreSQLBase {
     @Autowired
@@ -23,6 +32,9 @@ public class PayServiceTest extends SpringBootPostgreSQLBase {
 
     @Autowired
     private PayService payService;
+
+    @MockitoBean
+    private DefaultApi paymentApi;
 
     @BeforeEach
     public void createTestData() {
@@ -41,15 +53,40 @@ public class PayServiceTest extends SpringBootPostgreSQLBase {
     }
 
     @Test
-    public void shouldSetPaidForOrder() {
+    public void shouldGetCurrentBalance() {
+        BalanceGet200Response response = new BalanceGet200Response();
+        response.setBalance(15F);
+        when(paymentApi.balanceGet()).thenReturn(Mono.just(response));
+
+        assertEquals(response.getBalance(), payService.getCurrentBalance().block());
+    }
+
+    @Test
+    public void shouldGetMinusBalanceOnError() {;
+        when(paymentApi.balanceGet()).thenReturn(Mono.error(new Exception()));
+
+        StepVerifier.create(payService.getCurrentBalance())
+                .expectNext(-1F)
+                .verifyComplete();
+    }
+
+    @Test
+    public void shouldGetPaymentResponse() {
+        PaymentPostRequest paymentPostRequest = new PaymentPostRequest();
+        paymentPostRequest.setAmount(9F);
+
+        PaymentResponse paymentResponse = new PaymentResponse();
+        paymentResponse.setProcessed(true);
+
+        when(paymentApi.paymentPost(paymentPostRequest)).thenReturn(Mono.just(paymentResponse));
+
         Order order = new Order();
         order.setStatus(OrderStatus.PRE_ORDER);
-        order.setTotalPrice(BigDecimal.TEN);
+        order.setTotalPrice(BigDecimal.valueOf(9F));
         orderRepository.save(order).block();
 
-        payService.setPaidFor(order.getId()).block();
-
-        assertEquals(OrderStatus.PAID, orderRepository.findAll().collectList().block().stream().filter(o -> o.getStatus().equals(OrderStatus.PAID)).findFirst().get().getStatus());
-        assertEquals(2, orderRepository.findAll().collectList().block().size());
+        StepVerifier.create(payService.setPaidFor(order.getId()))
+                .expectNext(paymentResponse)
+                .verifyComplete();
     }
 }

@@ -1,7 +1,9 @@
 package ru.mityunin.myShop.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,25 +15,30 @@ import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderService {
 
     private static final String CACHE_PREFIX = "orders:";
-    private static final Duration CACHE_TTL = Duration.ofMinutes(1);
+    @Value("${order.cache.ttl:1m}")
+    private Duration CACHE_TTL;
 
     private OrderRepository orderRepository;
     private ProductRepository productRepository;
     private final ReactiveRedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper; // Добавляем ObjectMapper
 
-    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, ReactiveRedisTemplate<String, Object> redisTemplate) {
+    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, ReactiveRedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.redisTemplate = redisTemplate;
+        this.objectMapper = objectMapper;
     }
 
-    private Mono<Boolean> cacheProducts(Mono<String> keyMono, List<Product> products) {
+    public Mono<Boolean> cacheProducts(Mono<String> keyMono, List<Product> products) {
         return keyMono.flatMap(key -> redisTemplate.opsForValue()
                 .set(key, products, CACHE_TTL));
     }
@@ -46,32 +53,45 @@ public class OrderService {
     }
 
     public Flux<Product> getProductsByOrder(Mono<Order> orderMono) {
-        Mono<String> cackeKeyMono = orderMono.map(order -> CACHE_PREFIX + ":" + order.getId().toString());
+        Mono<String> cacheKeyMono = orderMono.map(order -> CACHE_PREFIX + ":" + order.getId().toString());
 
-        return getProductsByOrderFromCache(cackeKeyMono, orderMono)
+        return getProductsByOrderFromCache(cacheKeyMono, orderMono)
                 .switchIfEmpty(
                         getProductsByOrderFromDB(orderMono)
                                 .collectList()
                                 .flatMapMany(products ->
-                                        cacheProducts(cackeKeyMono, products).thenMany(Flux.fromIterable(products)
-                                        )));
+                                        cacheProducts(cacheKeyMono, products).thenMany(Flux.fromIterable(products)
+                                        )))
+                .sort(Comparator.comparing(Product::getId));
     }
-
+    public Mono<Boolean> clearCacheForOrder(Order order) {
+        String cacheKeyMono = CACHE_PREFIX + ":" + order.getId();
+        return redisTemplate.opsForValue().delete(cacheKeyMono);
+    }
     public Flux<Product> getProductsByOrderFromCache(Mono<String> cacheKeyMono,Mono<Order> orderMono) {
         return cacheKeyMono.flatMapMany(cacheKey -> Mono.zip(
                 redisTemplate.opsForValue().get(cacheKey), orderMono)
                 .flatMapMany(tuple -> {
                     if (tuple.getT1() instanceof List<?> list) {
                             return Flux.fromIterable(list)
-                                    .filter(Product.class::isInstance)
-                                    .map(Product.class::cast)
+                                    .flatMap(item -> {
+                                        if (item instanceof Product) {
+                                            return Mono.just((Product) item);
+                                        } else if (item instanceof Map) {
+                                            // Конвертируем LinkedHashMap в Product
+                                            return Mono.fromCallable(() ->
+                                                    objectMapper.convertValue(item, Product.class)
+                                            );
+                                        }
+                                        return Mono.empty();
+                                    })
                                     .map(product -> {
                                         Integer count = tuple.getT2().countInOrderedProductWith(product.getId());
                                         product.setCountInBasket(count);
                                         return product;
                                     });
-                        }
-                        return Flux.empty();
+                    }
+                    return Flux.empty();
                 })
         );
     }
@@ -150,9 +170,11 @@ public class OrderService {
         return Mono.fromRunnable(() -> {
             if (action == ActionWithProduct.INCREASE) {
                 addOrIncreaseProduct(basket, product, currentCount);
+
             } else {
                 decreaseOrRemoveProduct(basket, product.getId(), currentCount);
             }
+            clearCacheForOrder(basket).subscribe();
         });
     }
 

@@ -29,12 +29,18 @@
         <jsoup.version>1.17.2</jsoup.version>
         <testcontainers.version>1.19.8</testcontainers.version>
         <openapi-generator-maven-plugin.version>7.12.0</openapi-generator-maven-plugin.version>
+        <springdoc-openapi-starter-webflux-ui.version>2.5.0</springdoc-openapi-starter-webflux-ui.version>
 
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <!-- Сторонние библиотеки с явным указанием версий -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+                <version>${springdoc-openapi-starter-webflux-ui.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>r2dbc-postgresql</artifactId>
@@ -74,6 +80,12 @@
                 <groupId>org.testcontainers</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>${testcontainers.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>5.10.2</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

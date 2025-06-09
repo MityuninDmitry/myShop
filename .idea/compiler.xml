@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="webModule" />
+        <module name="paymentModule" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -18,6 +19,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="myShop" options="" />
       <module name="myShop (1)" options="-parameters" />
+      <module name="paymentModule" options="-parameters" />
       <module name="webModule" options="-parameters" />
     </option>
   </component>

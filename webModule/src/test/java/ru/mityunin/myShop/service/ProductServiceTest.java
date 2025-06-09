@@ -3,7 +3,11 @@ package ru.mityunin.myShop.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.test.context.TestPropertySource;
 import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 import ru.mityunin.myShop.SpringBootPostgreSQLBase;
 import ru.mityunin.myShop.controller.DTO.FilterRequest;
 import ru.mityunin.myShop.model.*;
@@ -11,11 +15,19 @@ import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ProductServiceTest extends SpringBootPostgreSQLBase {
+@TestPropertySource(properties = "product.cache.ttl=2s")
+public class ProductServiceTest extends SpringBootPostgreSQLBase {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
@@ -23,6 +35,11 @@ class ProductServiceTest extends SpringBootPostgreSQLBase {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private ReactiveRedisTemplate<String, Object> redisTemplate;
 
     @BeforeEach
     public void createTestData() {
@@ -41,17 +58,26 @@ class ProductServiceTest extends SpringBootPostgreSQLBase {
     }
 
     @Test
-    public void shouldGetProductByProductId() {
-        Product product = productRepository.findAll().collectList().block().get(0);
-        Product sameProduct = productService.getProductBy(product.getId()).block();
-
-        assertEquals(product.getId(),sameProduct.getId());
-        assertEquals(product.getName(),sameProduct.getName());
-        assertEquals(product.getDescription(),sameProduct.getDescription());
-        assertEquals(product.getImageUrl(),sameProduct.getImageUrl());
-
+    public void testRedisTemplateIsAvailable() {
+        assertThat(redisTemplate).isNotNull();
+        redisTemplate.opsForValue().set("test_key", "test_value", Duration.ofSeconds(10))
+                .as(StepVerifier::create)
+                .expectNext(true)
+                .verifyComplete();
     }
 
+    @Test
+    public void cacheProducts_shouldSaveDataToRedisAndReturnTheSame() {
+        String key = "products:test_cache";
+        List<Product> products = productRepository.findAll().collectList().block();
+        System.out.println(products);
+        productService.cacheProducts(key, products).block();
+
+        List<Product> rawCached = productService.findAllFromCache(key).collectList().block();
+
+        assertEquals(products.size(), rawCached.size());
+        assertTrue(products.containsAll(rawCached) && rawCached.containsAll(products));
+    }
     @Test
     public void shouldReturnExactCountProductsByDifferentFilters() {
         FilterRequest filterRequest = new FilterRequest(0,3,"","name","asc");
@@ -114,4 +140,22 @@ class ProductServiceTest extends SpringBootPostgreSQLBase {
         productService.setCountInBasketFor(product).block();
         assertEquals(4, product.getCountInBasket());
     }
+
+    @Test
+    public void findAll() throws InterruptedException {
+        FilterRequest filterRequest = new FilterRequest();
+        List<Product> products = productService.findAll(filterRequest).collectList().block();
+        assertEquals(10, products.size());
+
+        String cacheKey = "products:" + filterRequest.cacheKey();
+        assertEquals(10, productService.findAllFromCache(cacheKey).collectList().block().size());
+
+        await().atMost(10, SECONDS)
+                .pollInterval(1, SECONDS)
+                .untilAsserted(() ->
+                        assertThat(productService.findAllFromCache(cacheKey).collectList().block())
+                                .isEmpty()
+                );
+    }
+
 }

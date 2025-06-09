@@ -70,7 +70,7 @@ public class OrderController {
                     String sortBy = formData.containsKey("sortBy") ? formData.getFirst("sortBy") : "name";
                     String sortDirection = formData.containsKey("sortDirection") ?  formData.getFirst("sortDirection") : "asc";
 
-                    int page = formData.containsKey("page") ? Integer.parseInt(formData.getFirst("page")) : 1;
+                    int page = formData.containsKey("page") ? Integer.parseInt(formData.getFirst("page")) : 0;
                     int size = formData.containsKey("size") ? Integer.parseInt(formData.getFirst("size")) : 10;
                     String textFilter = formData.containsKey("textFilter") ? formData.getFirst("textFilter") : "";
 

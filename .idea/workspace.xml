@@ -4,7 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Добавил кеширование продуктов в заказе по требованиям + фикс бага, что не открывается страница" />
+    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Рабочий вариант взаимодействия с сервисом оплаты. Настроен докер композ для сборки, адаптирован код под требования задания">
+      <change afterPath="$PROJECT_DIR$/webModule/src/test/application-test.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/TestApiClientConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/TestRedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/ApiClientConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/ApiClientConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/model/Product.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/SpringBootPostgreSQLBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/SpringBootPostgreSQLBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/TestMyShopApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/TestMyShopApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/OrderControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/OrderControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/PayControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/PayControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/ProductControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/ProductControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/OrderServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/OrderServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/PayServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/PayServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/ProductServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/ProductServiceTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -101,6 +126,8 @@
     "JUnit.PayControllerTest.executor": "Run",
     "JUnit.PayControllerTest.payOrder.executor": "Run",
     "JUnit.PayControllerTest.payOrderWithOrderId.executor": "Run",
+    "JUnit.PayServiceTest.executor": "Run",
+    "JUnit.PayServiceTest.shouldGetCurrentBalance.executor": "Run",
     "JUnit.PayServiceTest.shouldSetPaidForOrder.executor": "Run",
     "JUnit.ProductControllerTest.executor": "Run",
     "JUnit.ProductControllerTest.getProductPage.executor": "Run",
@@ -121,11 +148,14 @@
     "Maven.myShop [org.springframework.boot:spring-boot-maven-plugin:3.4.5:test-run].executor": "Run",
     "Maven.myShop [package].executor": "Run",
     "Maven.myShop [test].executor": "Run",
+    "Maven.paymentModule [org.openapitools:openapi-generator-maven-plugin:7.12.0:generate].executor": "Run",
+    "Maven.paymentModule [org.openapitools:openapi-generator-maven-plugin:7.12.0:help].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/dmitrymityunin/IdeaProjects/myShop/webModule",
+    "last_opened_file_path": "/Users/dmitrymityunin/IdeaProjects/myShop/webModule/src/main/resources",
+    "onboarding.tips.debug.path": "/Users/dmitrymityunin/IdeaProjects/myShop/paymentModule/src/main/java/ru/mityunin/Main.java",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
@@ -134,36 +164,31 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/webModule/src/main/resources" />
       <recent name="$PROJECT_DIR$/webModule" />
       <recent name="$PROJECT_DIR$/src/main/resources/templates" />
       <recent name="$PROJECT_DIR$/src/main/resources/db/changelog/scripts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/webModule" />
+      <recent name="$PROJECT_DIR$/paymentModule" />
+      <recent name="$PROJECT_DIR$/paymentModule/src/main/resources" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/main/resources/templates/fragment" />
-      <recent name="$PROJECT_DIR$/src/main/resources/static/images" />
-      <recent name="$PROJECT_DIR$/src/main/resources/static" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.OrderServiceTest (1)">
-    <configuration name="MyShopApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <envs>
-        <env name="SPRING_R2DBC_PASSWORD" value="springpass" />
-        <env name="SPRING_R2DBC_URL" value="r2dbc:postgresql://localhost:5432/myShop" />
-        <env name="SPRING_R2DBC_USERNAME" value="springuser" />
-        <env name="SPRING_DATASOURCE_URL" value="jdbc:postgresql://localhost:5432/myShop" />
-        <env name="SPRING_DATASOURCE_USERNAME" value="springuser" />
-        <env name="SPRING_DATASOURCE_PASSWORD" value="springpass" />
-      </envs>
-      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.MyShopApplication" />
-      <module name="myShop" />
+  <component name="RunManager" selected="JUnit.PayServiceTest.shouldGetCurrentBalance">
+    <configuration name="HomeControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="webModule" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="ru.mityunin.myShop.*" />
+          <option name="PATTERN" value="ru.mityunin.myShop.controller.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <option name="PACKAGE_NAME" value="ru.mityunin.myShop.controller" />
+      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.controller.HomeControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -183,7 +208,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="OrderServiceTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="PayServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="webModule" />
       <extension name="coverage">
         <pattern>
@@ -192,42 +217,58 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="ru.mityunin.myShop.service" />
-      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.service.OrderServiceTest" />
+      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.service.PayServiceTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="java in myShop" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="myShop" />
-      <option name="TEST_OBJECT" value="directory" />
-      <dir value="$PROJECT_DIR$/src/test/java" />
+    <configuration name="PayServiceTest.shouldGetCurrentBalance" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="webModule" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ru.mityunin.myShop.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="ru.mityunin.myShop.service" />
+      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.service.PayServiceTest" />
+      <option name="METHOD_NAME" value="shouldGetCurrentBalance" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="java in webModule" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="PayServiceTest.shouldSetPaidForOrder" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="webModule" />
-      <option name="TEST_OBJECT" value="directory" />
-      <dir value="$PROJECT_DIR$/webModule/src/test/java" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ru.mityunin.myShop.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="ru.mityunin.myShop.service" />
+      <option name="MAIN_CLASS_NAME" value="ru.mityunin.myShop.service.PayServiceTest" />
+      <option name="METHOD_NAME" value="shouldSetPaidForOrder" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.MyShopApplication" />
+      <item itemvalue="JUnit.HomeControllerTest" />
       <item itemvalue="JUnit.OrderControllerTest" />
-      <item itemvalue="JUnit.OrderServiceTest (1)" />
-      <item itemvalue="JUnit.java in webModule" />
-      <item itemvalue="JUnit.java in myShop" />
+      <item itemvalue="JUnit.PayServiceTest" />
+      <item itemvalue="JUnit.PayServiceTest.shouldGetCurrentBalance" />
+      <item itemvalue="JUnit.PayServiceTest.shouldSetPaidForOrder" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.OrderServiceTest (1)" />
-        <item itemvalue="JUnit.java in webModule" />
+        <item itemvalue="JUnit.PayServiceTest.shouldGetCurrentBalance" />
         <item itemvalue="JUnit.OrderControllerTest" />
-        <item itemvalue="JUnit.java in myShop" />
-        <item itemvalue="Application.MyShopApplication" />
+        <item itemvalue="JUnit.PayServiceTest.shouldSetPaidForOrder" />
+        <item itemvalue="JUnit.PayServiceTest" />
+        <item itemvalue="JUnit.HomeControllerTest" />
       </list>
     </recent_temporary>
   </component>
@@ -480,7 +521,31 @@
       <option name="project" value="LOCAL" />
       <updated>1748971091965</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Создал новый модуль PaymentModule и первично настроил для кодогенерации">
+      <option name="closed" value="true" />
+      <created>1748975106131</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1748975106131</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Сгенерирован серверный код и клиента, доработаны контроллеры, доработана спецификация">
+      <option name="closed" value="true" />
+      <created>1749066132589</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1749066132589</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Рабочий вариант взаимодействия с сервисом оплаты. Настроен докер композ для сборки, адаптирован код под требования задания">
+      <option name="closed" value="true" />
+      <created>1749147025326</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1749147025326</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -495,9 +560,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Карточка товара и переход на карточку товара. Логика добавлеия удаления товара из корзины" />
-    <MESSAGE value="Общая панель с кнопками перехода в корзину, заказы, домой. Картинки и стили навесил соответственно. И заглушки под страницы" />
-    <MESSAGE value="Отображение корзины, заказов, конкретного оплаченного заказа. Логика оплаты. Добавил соответствующие стили." />
     <MESSAGE value="Микроправки текста на страницах" />
     <MESSAGE value="Тесты на ProductService с использованием TestContainers" />
     <MESSAGE value="Тесты на OrderService с использованием TestContainers" />
@@ -520,7 +582,10 @@
     <MESSAGE value="Проработка структуры проекта и его настройка + кеширование в редисе" />
     <MESSAGE value="Прокинул в кеш информацию о товаре" />
     <MESSAGE value="Добавил кеширование продуктов в заказе по требованиям + фикс бага, что не открывается страница" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавил кеширование продуктов в заказе по требованиям + фикс бага, что не открывается страница" />
+    <MESSAGE value="Создал новый модуль PaymentModule и первично настроил для кодогенерации" />
+    <MESSAGE value="Сгенерирован серверный код и клиента, доработаны контроллеры, доработана спецификация" />
+    <MESSAGE value="Рабочий вариант взаимодействия с сервисом оплаты. Настроен докер композ для сборки, адаптирован код под требования задания" />
+    <option name="LAST_COMMIT_MESSAGE" value="Рабочий вариант взаимодействия с сервисом оплаты. Настроен докер композ для сборки, адаптирован код под требования задания" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/myShop$MyShopApplication.ic" NAME="MyShopApplication Coverage Results" MODIFIED="1746638229442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">

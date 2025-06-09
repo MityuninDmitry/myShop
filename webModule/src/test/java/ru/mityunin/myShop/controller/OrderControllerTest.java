@@ -23,6 +23,7 @@ import ru.mityunin.myShop.service.OrderService;
 import ru.mityunin.myShop.service.ProductService;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -82,17 +83,13 @@ public class OrderControllerTest extends SpringBootPostgreSQLBase {
     @Test
     public void getOrderInfo() throws Exception {
         //  подготовка заказа
-        FilterRequest filterRequest = new FilterRequest();
-        List<Product> products = productService.findAll(filterRequest)
-                .collectList()
-                .block();
 
-        products.forEach(product -> orderService.updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE).block());
-
-        Order order = orderService.getBasket().block();
+        List<Product> products = productRepository.findAll().collectList().block().subList(0,10);
+        products.forEach(product -> orderService.updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE).block(Duration.ofSeconds(5)));
+        Order order = orderService.getBasket().block(Duration.ofSeconds(5));
         Double orderTotalPrice = order.getTotalPrice().doubleValue();
         String formattedPrice = String.format("%.2f", orderTotalPrice).replace('.', ',');
-        orderService.setPaidFor(order.getId()).block();
+        orderService.setPaidFor(order.getId()).block(Duration.ofSeconds(5));
 
 
         webTestClient.get().uri("/order/" + order.getId())
@@ -171,7 +168,7 @@ public class OrderControllerTest extends SpringBootPostgreSQLBase {
                 .body(BodyInserters.fromFormData(formData))
                 .exchange()
                 .expectStatus().is3xxRedirection()
-                .expectHeader().valueEquals("Location", "/?page=1&size=10&textFilter=&sortBy=name&sortDirection=asc")
+                .expectHeader().valueEquals("Location", "/?page=0&size=10&textFilter=&sortBy=name&sortDirection=asc")
         ;
 
         Order order = orderService.getBasket().block();
@@ -251,7 +248,7 @@ public class OrderControllerTest extends SpringBootPostgreSQLBase {
                 .body(BodyInserters.fromFormData(formData))
                 .exchange()
                 .expectStatus().is3xxRedirection()
-                .expectHeader().valueEquals("Location", "/?page=1&size=10&textFilter=&sortBy=name&sortDirection=asc")
+                .expectHeader().valueEquals("Location", "/?page=0&size=10&textFilter=&sortBy=name&sortDirection=asc")
         ;
 
         Order order = orderService.getBasket().block();
