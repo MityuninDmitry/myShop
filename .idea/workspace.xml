@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Правка кода ошибки сортировки из кеша">
-      <change afterPath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/controller/BalanceControllerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/controller/PaymentControllerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/service/PaymentServiceTest.java" afterDir="false" />
+    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="тесты для платежного модуля">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/src/main/java/ru/mityunin/service/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/src/main/java/ru/mityunin/service/PaymentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -543,7 +541,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749579446210</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="тесты для платежного модуля">
+      <option name="closed" value="true" />
+      <created>1749581240945</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1749581240945</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -558,7 +564,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Тесты на OrderService с использованием TestContainers" />
     <MESSAGE value="Тесты на PayService с использованием TestContainers" />
     <MESSAGE value="Настройка, чтобы тесты проходили и не было проблем с потерей соединения" />
     <MESSAGE value="тесты на контроллеры + небольшой рефактор кода" />
@@ -583,7 +588,8 @@
     <MESSAGE value="Рабочий вариант взаимодействия с сервисом оплаты. Настроен докер композ для сборки, адаптирован код под требования задания" />
     <MESSAGE value="Тесты проходят (но раз через раз из-за того, что отваливается редис)" />
     <MESSAGE value="Правка кода ошибки сортировки из кеша" />
-    <option name="LAST_COMMIT_MESSAGE" value="Правка кода ошибки сортировки из кеша" />
+    <MESSAGE value="тесты для платежного модуля" />
+    <option name="LAST_COMMIT_MESSAGE" value="тесты для платежного модуля" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/myShop$MyShopApplication.ic" NAME="MyShopApplication Coverage Results" MODIFIED="1746638229442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">

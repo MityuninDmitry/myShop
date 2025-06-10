@@ -1,5 +1,5 @@
-# myShop
-## Техническое задание 
+# myShop v2
+## Техническое задание
 Приложение состоит из шести основных частей (модулей):
 - страница витрины товаров, доступных для просмотра и покупки;
     - список товаров, доступных для заказа (картинка, название, цена, кнопка добавления в корзину/удаления из неё, кнопка изменения количества товара в корзине);
@@ -20,18 +20,18 @@
     - при нажатии на заказ появляется веб-страница совершённого заказа.
 - страница заказа;
     - На веб-странице заказа представлен список купленных товаров (картинка, название, цена).
-- сервис покупки.
+- сервис покупки (реализован в текущей версии).
 
-## Основные эндпоинты 
-| Эндпоинт                           | Описание                              | 
-|------------------------------------|---------------------------------------|
-| http://localhost:8080              | Витрина товаров                       | 
+## Основные эндпоинты
+| Эндпоинт              | Описание                              | 
+|-----------------------------------|---------------------------------------|
+| http://localhost:8080             | Витрина товаров                       | 
 | http://localhost:8080/order/basket | Корзина с товарами                    | 
 | http://localhost:8080/order/orders | Оплаченные заказы                     |
-| http://localhost:8080/order/{id}   | Открыть страницу с оплаченным заказом |
+| http://localhost:8080/order/{id}  | Открыть страницу с оплаченным заказом |
+| http://localhost:8081/webjars/swagger-ui/index.html | Swagger UI платежного модуля|
 
-
-## Особенности реализации 
+## Особенности реализации
 - Реализовано на реактивном стеке
 - Корзина - это Order в статусе PRE_ORDER
 - При оформлении заказа из корзины, корзина приобретает статус PAID (становится оплаченным заказом) и создается новая корзина
@@ -40,12 +40,9 @@
 - На всех страницах есть плашка с кнопками (домой, корзина, оплаченные заказы)
 - Для первичной загрузки товаров надо нажать ссылку ["Загрузить список товаров с нуля"](http://localhost:8080/createTestProducts) в левой верхней части страницы с [витриной товаров](http://localhost:8080)
 
-## Схема БД 
-![Схема БД](./images/bd_schema.png)
-
 ## Алгоритм запуска приложения:
 - Установить docker на компьютер
-- Для клонирования прокта 
+- Для клонирования прокта
 ```
 git clone https://github.com/MityuninDmitry/myShop.git
 ```
@@ -53,50 +50,33 @@ git clone https://github.com/MityuninDmitry/myShop.git
 ```
 cd myShop
 ```
-- Различные способы запуска на выбор:
-  - Запуск полностью в докере:
-    - Запуск 
+- Запуск полностью в докере:
+  - Запуск
+        ```
+        docker-compose up -d --build 
+        ```
+  - Остановка
+        ```
+        docker-compose down
+        ```
+  - Остановка с удалением
     ```
-    docker-compose up -d
-    ```
-    - Остановка 
-    ```
-    docker-compose down
-    ```
-  - Запуск из idea:
-    - сперва поднять БД в докере
-    ``` 
-    docker-compose up -d postgres 
-    ``` 
-    - в переменные окружения добавить 
-    ```
-    SPRING_R2DBC_PASSWORD=springpass;SPRING_R2DBC_URL=r2dbc:postgresql://localhost:5432/myShop;SPRING_R2DBC_USERNAME=springuser;SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/myShop;SPRING_DATASOURCE_USERNAME=springuser;SPRING_DATASOURCE_PASSWORD=springpass;
-    ```
-    - нажать Run для запуска
-    - остановка по Stop
-  - запуск локально
-    - сперва поднять БД в докере 
-    ```
-    docker-compose up -d postgres
-    ```
-    - ввести команду 
-    ```
-    ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="
-    -DSPRING_R2DBC_URL=r2dbc:postgresql://localhost:5432/myShop
-    -DSPRING_R2DBC_USERNAME=springuser
-    -DSPRING_R2DBC_PASSWORD=springpass
-    -DSPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/myShop
-    -DSPRING_DATASOURCE_USERNAME=springuser
-    -DSPRING_DATASOURCE_PASSWORD=springpass
-    "
+    docker-compose down -v
     ```
 
 ## Тесты:
-- для прогона тестов команда: ./mvnw test 
+- для прогона тестов веб модуля
+```
+./mvnw clean install -pl paymentModule
+./mvnw clean test -pl webModule
+```
+!Внимание: тест иногда зависает, так и не смог до конца разобраться почему. Редис отваливается и к нему приложение повтрого не может запуститься. Помогает перезапуск тестов.
+- для прогона тестов платежного модуля 
+```./mvnw clean test -pl paymentModule```
 
 ## Используемые технологии
 
-- Spring Boot 
+- Spring Boot
 - WebFlux
 - Docker
 - PostgreSQL
@@ -105,3 +85,4 @@ cd myShop
 - HTML/CSS
 - Maven
 - Junit
+- Redis
