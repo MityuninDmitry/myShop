@@ -1,5 +1,6 @@
 package ru.mityunin.myShop.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,7 @@ public class ProductServiceTest extends SpringBootPostgreSQLBase {
     }
 
     @Test
-    public void cacheProducts_shouldSaveDataToRedisAndReturnTheSame() {
+    public void cacheProducts_shouldSaveDataToRedisAndReturnTheSame() throws JsonProcessingException {
         String key = "products:test_cache";
         List<Product> products = productRepository.findAll().collectList().block();
         System.out.println(products);

@@ -21,6 +21,7 @@ import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -60,6 +61,21 @@ public class ProductService {
     public Flux<Product> findAll(FilterRequest filterRequest) {
         String cacheKey = PRODUCT_CACHE_PREFIX + filterRequest.cacheKey();
         return findAllFromCache(cacheKey)
+                .sort(new Comparator<Product>() {
+                    @Override
+                    public int compare(Product o1, Product o2) {
+                        if (filterRequest.sortBy().equals("name")) {
+                            if (filterRequest.sortDirection().equals("asc")) {
+                                return o1.getName().compareTo(o2.getName());
+                            }
+                            else return o2.getName().compareTo(o1.getName());
+                        } else {
+                            if (filterRequest.sortDirection().equals("asc")) {
+                                return o1.getPrice() .compareTo(o2.getPrice());
+                            } else return o2.getPrice().compareTo(o1.getPrice());
+                        }
+                    }
+                })
                 .switchIfEmpty(
                         findAllFromDB(filterRequest)
                                 .collectList()

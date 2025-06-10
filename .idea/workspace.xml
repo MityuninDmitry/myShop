@@ -4,30 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Рабочий вариант взаимодействия с сервисом оплаты. Настроен докер композ для сборки, адаптирован код под требования задания">
-      <change afterPath="$PROJECT_DIR$/webModule/src/test/application-test.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/TestApiClientConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/TestRedisConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Тесты проходят (но раз через раз из-за того, что отваливается редис)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/ApiClientConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/ApiClientConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/RedisConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/model/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/SpringBootPostgreSQLBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/SpringBootPostgreSQLBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/TestMyShopApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/TestMyShopApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/OrderControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/OrderControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/PayControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/PayControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/ProductControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/ProductControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/OrderServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/OrderServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/PayServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/PayServiceTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/ProductServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/ProductServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -545,7 +524,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749147025326</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Тесты проходят (но раз через раз из-за того, что отваливается редис)">
+      <option name="closed" value="true" />
+      <created>1749497439352</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1749497439352</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -560,7 +547,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Микроправки текста на страницах" />
     <MESSAGE value="Тесты на ProductService с использованием TestContainers" />
     <MESSAGE value="Тесты на OrderService с использованием TestContainers" />
     <MESSAGE value="Тесты на PayService с использованием TestContainers" />
@@ -585,7 +571,8 @@
     <MESSAGE value="Создал новый модуль PaymentModule и первично настроил для кодогенерации" />
     <MESSAGE value="Сгенерирован серверный код и клиента, доработаны контроллеры, доработана спецификация" />
     <MESSAGE value="Рабочий вариант взаимодействия с сервисом оплаты. Настроен докер композ для сборки, адаптирован код под требования задания" />
-    <option name="LAST_COMMIT_MESSAGE" value="Рабочий вариант взаимодействия с сервисом оплаты. Настроен докер композ для сборки, адаптирован код под требования задания" />
+    <MESSAGE value="Тесты проходят (но раз через раз из-за того, что отваливается редис)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Тесты проходят (но раз через раз из-за того, что отваливается редис)" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/myShop$MyShopApplication.ic" NAME="MyShopApplication Coverage Results" MODIFIED="1746638229442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
