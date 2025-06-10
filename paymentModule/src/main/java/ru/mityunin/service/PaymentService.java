@@ -20,6 +20,10 @@ public class PaymentService {
         return Mono.just(balance);
     }
 
+    public void setBalance(float balance) {
+        this.balance = balance;
+    }
+
     public Mono<Float> increaseBalance(Mono<BalancePostRequest> balancePostRequestMono) {
         return balancePostRequestMono.flatMap(request -> {
             balance += request.getAmount();
