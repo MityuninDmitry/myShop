@@ -15,4 +15,6 @@ public interface OrderRepository extends R2dbcRepository<Order, Long> {
         ORDER BY create_date_time desc
         """)
     Flux<Order> findByStatus(@Param("status") OrderStatus status);
+
+    Flux<Order> findByUserIdAndStatus(Long userId, OrderStatus status);
 }

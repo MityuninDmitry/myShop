@@ -4,11 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="тесты для платежного модуля">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="readme">
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/model/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/repository/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AdminInitializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AuthService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/CustomReactiveUserDetailsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webModule/src/main/resources/db/changelog/scripts/003-init-users-schema.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/model/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/model/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/repository/OrderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/repository/OrderRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/resources/db/changelog/db.changelog-master.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/resources/db/changelog/db.changelog-master.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,6 +142,7 @@
     "Maven.paymentModule [org.openapitools:openapi-generator-maven-plugin:7.12.0:help].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/dmitrymityunin/IdeaProjects/myShop/webModule/src/main/resources",
@@ -155,6 +166,9 @@
       <recent name="$PROJECT_DIR$/paymentModule/src/main/resources" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/main/resources/templates/fragment" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="ru.mityunin.myShop.service" />
     </key>
   </component>
   <component name="RunManager" selected="JUnit.PayServiceTest.shouldGetCurrentBalance">
@@ -549,7 +563,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749581240945</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="readme">
+      <option name="closed" value="true" />
+      <created>1749582679316</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1749582679316</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -564,7 +586,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Тесты на PayService с использованием TestContainers" />
     <MESSAGE value="Настройка, чтобы тесты проходили и не было проблем с потерей соединения" />
     <MESSAGE value="тесты на контроллеры + небольшой рефактор кода" />
     <MESSAGE value="Рефактор + докер + readme + правка тестов" />
@@ -589,7 +610,8 @@
     <MESSAGE value="Тесты проходят (но раз через раз из-за того, что отваливается редис)" />
     <MESSAGE value="Правка кода ошибки сортировки из кеша" />
     <MESSAGE value="тесты для платежного модуля" />
-    <option name="LAST_COMMIT_MESSAGE" value="тесты для платежного модуля" />
+    <MESSAGE value="readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="readme" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/myShop$MyShopApplication.ic" NAME="MyShopApplication Coverage Results" MODIFIED="1746638229442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
