@@ -4,17 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Добавил логику, чтобы корзина была привязана к пользовтелю и корректно сохранялось и доставалось из БД">
+    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Поменял yml спеку для автогенерации кода с учетом передачи username для привязки к балансу. Поменял логику приложений, чтобы баланс списывался с пользователя.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/api-spec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/api-spec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/src/main/java/ru/mityunin/controller/BalanceControllerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/src/main/java/ru/mityunin/controller/BalanceControllerImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/src/main/java/ru/mityunin/controller/PaymentControllerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/src/main/java/ru/mityunin/controller/PaymentControllerImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/src/main/java/ru/mityunin/service/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/src/main/java/ru/mityunin/service/PaymentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/controller/BalanceControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/controller/BalanceControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/controller/PaymentControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/controller/PaymentControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/service/PaymentServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/service/PaymentServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/api-spec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/api-spec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/PayService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/PayService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -584,7 +577,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750871971422</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="Поменял yml спеку для автогенерации кода с учетом передачи username для привязки к балансу. Поменял логику приложений, чтобы баланс списывался с пользователя.">
+      <option name="closed" value="true" />
+      <created>1750876108135</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1750876108135</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -599,7 +600,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Рефактор + докер + readme + правка тестов" />
     <MESSAGE value="Переезд на реактивный стек (WebFlux, r2dbc) + настройки docker-compose и luquibase" />
     <MESSAGE value="Устранил дефекты связанные с наличием block() в коде + настройка luquibase + настройка конфигураций" />
     <MESSAGE value="Убрал пока тесты, поправил только ProductControllerTest. Настроил конфигурацию для подключения к БД для тестов и luquibase." />
@@ -624,7 +624,8 @@
     <MESSAGE value="readme" />
     <MESSAGE value="Первичная настройка секьюрити проекта с изменением схемы БД (пользователь привязан к корзине)" />
     <MESSAGE value="Добавил логику, чтобы корзина была привязана к пользовтелю и корректно сохранялось и доставалось из БД" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавил логику, чтобы корзина была привязана к пользовтелю и корректно сохранялось и доставалось из БД" />
+    <MESSAGE value="Поменял yml спеку для автогенерации кода с учетом передачи username для привязки к балансу. Поменял логику приложений, чтобы баланс списывался с пользователя." />
+    <option name="LAST_COMMIT_MESSAGE" value="Поменял yml спеку для автогенерации кода с учетом передачи username для привязки к балансу. Поменял логику приложений, чтобы баланс списывался с пользователя." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/myShop$MyShopApplication.ic" NAME="MyShopApplication Coverage Results" MODIFIED="1746638229442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">

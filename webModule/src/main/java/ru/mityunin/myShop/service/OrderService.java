@@ -18,9 +18,13 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class OrderService {
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
+    private final ConcurrentHashMap<String, Mono<Order>> basketCreationLocks = new ConcurrentHashMap<>();
 
     private static final String CACHE_PREFIX = "orders:";
     @Value("${order.cache.ttl:1m}")
@@ -115,20 +119,46 @@ public class OrderService {
         Mono<Order> orderMono = orderRepository.findById(order_id);
         return getProductsByOrder(orderMono);
     }
-    @Transactional
+
+//    @Transactional
+//    public Mono<Order> getBasket() {
+//        return authService.getCurrentUsername()
+//                .flatMap(userName ->
+//                        findOrdersBy(userName,OrderStatus.PRE_ORDER).collectList()
+//                .flatMap(orders -> {
+//                    if (orders.isEmpty()) {
+//                        // Если корзины нет - создаем новую
+//
+//                        return createBasket(userName);
+//                    } else {
+//                        // Берем первую найденную корзину
+//
+//                        return Mono.just(orders.get(0));
+//                    }
+//                })) ;
+//    }
+
     public Mono<Order> getBasket() {
         return authService.getCurrentUsername()
-                .flatMap(userName ->
-                        findOrdersBy(userName,OrderStatus.PRE_ORDER).collectList()
+                .flatMap(userName -> basketCreationLocks
+                        .computeIfAbsent(userName, un -> createBasketWithLock(un).cache())
+                );
+    }
+
+    private Mono<Order> createBasketWithLock(String userName) {
+        return Mono.defer(() -> findOrdersBy(userName, OrderStatus.PRE_ORDER)
+                .collectList()
                 .flatMap(orders -> {
                     if (orders.isEmpty()) {
-                        // Если корзины нет - создаем новую
-                        return createBasket(userName);
-                    } else {
-                        // Берем первую найденную корзину
-                        return Mono.just(orders.get(0));
+                        return createBasket(userName)
+                                .onErrorResume(e -> {
+                                    basketCreationLocks.remove(userName);
+                                    return Mono.error(e);
+                                });
                     }
-                })) ;
+                    return Mono.just(orders.get(0));
+                })
+                .doFinally(signal -> basketCreationLocks.remove(userName)));
     }
 
     @Transactional
