@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
@@ -22,13 +23,15 @@ public class PaymentControllerImpl implements PaymentApi {
 
     private final PaymentService paymentService;
 
-
     public PaymentControllerImpl(PaymentService paymentService) {
         this.paymentService = paymentService;
     }
 
     @Override
-    public Mono<ResponseEntity<PaymentResponse>> paymentPost(Mono<PaymentPostRequest> paymentPostRequest, ServerWebExchange exchange) {
+    public Mono<ResponseEntity<PaymentResponse>> paymentPost(
+            @RequestParam String username,
+            Mono<PaymentPostRequest> paymentPostRequest,
+            ServerWebExchange exchange) {
         return paymentPostRequest.flatMap(request -> {
             if (request.getAmount() <= 0) {
                 PaymentResponse response = new PaymentResponse();
@@ -37,27 +40,23 @@ public class PaymentControllerImpl implements PaymentApi {
                 return Mono.just(ResponseEntity.ok().body(response));
             }
             try {
-                log.info("before integration {} ", request);
-                return paymentService.processPayment(Mono.just(request)).flatMap(processed -> {
-                    PaymentResponse response = new PaymentResponse();
-                    response.setProcessed(processed);
-                    if (processed) {
-                        response.setDescription("Заказ успешно оплачен");
-                        log.info("response {}", response);
-                        return Mono.just(ResponseEntity.ok().body(response));
-                    } else {
-                        response.setDescription("Недостаточно средств на балансе");
-                        return Mono.just(ResponseEntity.ok().body(response));
-                    }
-                });
-            }
-            catch (Exception e) {
+                log.info("Payment request for user: {}, amount: {}", username, request.getAmount());
+                return paymentService.processPayment(username, Mono.just(request))
+                        .flatMap(processed -> {
+                            PaymentResponse response = new PaymentResponse();
+                            response.setProcessed(processed);
+                            if (processed) {
+                                response.setDescription("Заказ успешно оплачен");
+                                log.info("Payment successful for user: {}", username);
+                                return Mono.just(ResponseEntity.ok().body(response));
+                            } else {
+                                response.setDescription("Недостаточно средств на балансе");
+                                return Mono.just(ResponseEntity.ok().body(response));
+                            }
+                        });
+            } catch (Exception e) {
                 return Mono.just(ResponseEntity.internalServerError().build());
             }
         });
-
     }
-
-
-
 }

@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -24,8 +25,10 @@ public class BalanceControllerImpl implements BalanceApi {
     }
 
     @Override
-    public Mono<ResponseEntity<BalanceGet200Response>> balanceGet(ServerWebExchange exchange) {
-        return paymentService.getBalance()
+    public Mono<ResponseEntity<BalanceGet200Response>> balanceGet(
+            @RequestParam String username,
+            ServerWebExchange exchange) {
+        return paymentService.getBalance(username)
                 .map(balance -> {
                     BalanceGet200Response response = new BalanceGet200Response();
                     response.setBalance(balance);
@@ -34,8 +37,11 @@ public class BalanceControllerImpl implements BalanceApi {
     }
 
     @Override
-    public Mono<ResponseEntity<BalancePost200Response>> balancePost(Mono<BalancePostRequest> balancePostRequest, ServerWebExchange exchange) {
-        return paymentService.increaseBalance(balancePostRequest)
+    public Mono<ResponseEntity<BalancePost200Response>> balancePost(
+            @RequestParam String username,
+            Mono<BalancePostRequest> balancePostRequest,
+            ServerWebExchange exchange) {
+        return paymentService.increaseBalance(username, balancePostRequest)
                 .map(balance -> {
                     BalancePost200Response response = new BalancePost200Response();
                     response.setNewBalance(balance);

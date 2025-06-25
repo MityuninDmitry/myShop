@@ -10,6 +10,12 @@ paths:
   /balance:
     get:
       summary: Получить текущий баланс
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Успешное получение баланса
@@ -27,6 +33,12 @@ paths:
 
     post:
       summary: Пополнить баланс
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -61,6 +73,12 @@ paths:
   /payment:
     post:
       summary: Оплатить заказ
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:

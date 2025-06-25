@@ -17,28 +17,35 @@ public class PayService {
     private static final Logger log = LoggerFactory.getLogger(PayService.class);
     private final OrderService orderService;
     private final DefaultApi paymentApi;
+    private final AuthService authService;
 
-    public PayService(OrderService orderService, DefaultApi paymentApi) {
+    public PayService(OrderService orderService, DefaultApi paymentApi, AuthService authService) {
         this.orderService = orderService;
         this.paymentApi = paymentApi;
+        this.authService = authService;
     }
 
     @Transactional
     public Mono<PaymentResponse> setPaidFor(Long order_id) {
-        return orderService.getOrderTotalPriceBy(order_id)
-                .flatMap(orderPrice -> {
-                    PaymentPostRequest request = new PaymentPostRequest();
-                    request.setAmount(orderPrice.floatValue());
-                    log.info("request to payment {}", request);
-                    return paymentApi.paymentPost(request);
-                });
+        return authService.getCurrentUsername()
+                .flatMap(username ->
+                        orderService.getOrderTotalPriceBy(order_id)
+                                .flatMap(orderPrice -> {
+                                    PaymentPostRequest request = new PaymentPostRequest();
+                                    request.setAmount(orderPrice.floatValue());
+                                    log.info("Payment request for user: {}, order: {}, amount: {}",
+                                            username, order_id, request.getAmount());
+                                    return paymentApi.paymentPost(username, request);
+                                })
+                );
     }
 
     public Mono<Float> getCurrentBalance() {
-        return paymentApi.balanceGet().flatMap(response -> {
-            return Mono.just(response.getBalance());
-        }).onErrorResume(e -> {
-            return Mono.just(-1F);
-        });
+        return authService.getCurrentUsername()
+                .flatMap(username ->
+                        paymentApi.balanceGet(username)
+                                .flatMap(response -> Mono.just(response.getBalance()))
+                                .onErrorResume(e -> Mono.just(-1F))
+                );
     }
 }

@@ -56,14 +56,14 @@ public class PayServiceTest extends SpringBootPostgreSQLBase {
     public void shouldGetCurrentBalance() {
         BalanceGet200Response response = new BalanceGet200Response();
         response.setBalance(15F);
-        when(paymentApi.balanceGet()).thenReturn(Mono.just(response));
+        when(paymentApi.balanceGet("NEED_NAME")).thenReturn(Mono.just(response));
 
         assertEquals(response.getBalance(), payService.getCurrentBalance().block());
     }
 
     @Test
     public void shouldGetMinusBalanceOnError() {;
-        when(paymentApi.balanceGet()).thenReturn(Mono.error(new Exception()));
+        when(paymentApi.balanceGet("NEED_NAME")).thenReturn(Mono.error(new Exception()));
 
         StepVerifier.create(payService.getCurrentBalance())
                 .expectNext(-1F)
@@ -78,7 +78,7 @@ public class PayServiceTest extends SpringBootPostgreSQLBase {
         PaymentResponse paymentResponse = new PaymentResponse();
         paymentResponse.setProcessed(true);
 
-        when(paymentApi.paymentPost(paymentPostRequest)).thenReturn(Mono.just(paymentResponse));
+        when(paymentApi.paymentPost("NEED_NAME",paymentPostRequest)).thenReturn(Mono.just(paymentResponse));
 
         Order order = new Order();
         order.setStatus(OrderStatus.PRE_ORDER);

@@ -29,13 +29,12 @@ public class BalanceControllerTest {
     void setUp() {
 
         paymentService = new PaymentService();
-        paymentService.setBalance(100f); // Устанавливаем начальный баланс
         balanceController = new BalanceControllerImpl(paymentService);
     }
 
     @Test
     void balanceGet_shouldReturnCurrentBalance() {
-        Mono<ResponseEntity<BalanceGet200Response>> result = balanceController.balanceGet(null);
+        Mono<ResponseEntity<BalanceGet200Response>> result = balanceController.balanceGet("NEED_NAME",null);
 
         StepVerifier.create(result)
                 .assertNext(response -> {
@@ -51,7 +50,7 @@ public class BalanceControllerTest {
         request.setAmount(50f);
 
         Mono<ResponseEntity<BalancePost200Response>> result =
-                balanceController.balancePost(Mono.just(request), null);
+                balanceController.balancePost("NEED_NAME",Mono.just(request), null);
 
         StepVerifier.create(result)
                 .assertNext(response -> {
@@ -59,7 +58,7 @@ public class BalanceControllerTest {
                     assertEquals(150f, response.getBody().getNewBalance());
 
                     // Проверяем, что баланс действительно изменился в сервисе
-                    StepVerifier.create(paymentService.getBalance())
+                    StepVerifier.create(paymentService.getBalance("NEED_NAME"))
                             .expectNext(150f)
                             .verifyComplete();
                 })

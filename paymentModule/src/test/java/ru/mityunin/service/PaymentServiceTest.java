@@ -18,12 +18,12 @@ public class PaymentServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         paymentService = new PaymentService();
-        paymentService.setBalance(100f); // Устанавливаем начальный баланс для тестов
+        //paymentService.setBalance(100f); // Устанавливаем начальный баланс для тестов
     }
 
     @Test
     void getBalance_shouldReturnCurrentBalance() {
-        StepVerifier.create(paymentService.getBalance())
+        StepVerifier.create(paymentService.getBalance("NEED_NAME"))
                 .expectNext(100f)
                 .verifyComplete();
     }
@@ -33,11 +33,11 @@ public class PaymentServiceTest {
         BalancePostRequest request = new BalancePostRequest();
         request.setAmount(50f);
 
-        StepVerifier.create(paymentService.increaseBalance(Mono.just(request)))
+        StepVerifier.create(paymentService.increaseBalance("NEED_NAME",Mono.just(request)))
                 .expectNext(150f)
                 .verifyComplete();
 
-        StepVerifier.create(paymentService.getBalance())
+        StepVerifier.create(paymentService.getBalance("NEED_NAME"))
                 .expectNext(150f)
                 .verifyComplete();
     }
@@ -47,11 +47,11 @@ public class PaymentServiceTest {
         PaymentPostRequest request = new PaymentPostRequest();
         request.setAmount(50f);
 
-        StepVerifier.create(paymentService.processPayment(Mono.just(request)))
+        StepVerifier.create(paymentService.processPayment("NEED_NAME",Mono.just(request)))
                 .expectNext(true)
                 .verifyComplete();
 
-        StepVerifier.create(paymentService.getBalance())
+        StepVerifier.create(paymentService.getBalance("NEED_NAME"))
                 .expectNext(50f)
                 .verifyComplete();
     }
@@ -61,11 +61,11 @@ public class PaymentServiceTest {
         PaymentPostRequest request = new PaymentPostRequest();
         request.setAmount(150f);
 
-        StepVerifier.create(paymentService.processPayment(Mono.just(request)))
+        StepVerifier.create(paymentService.processPayment("NEED_NAME",Mono.just(request)))
                 .expectNext(false)
                 .verifyComplete();
 
-        StepVerifier.create(paymentService.getBalance())
+        StepVerifier.create(paymentService.getBalance("NEED_NAME"))
                 .expectNext(100f)
                 .verifyComplete();
     }

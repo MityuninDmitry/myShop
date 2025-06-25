@@ -19,7 +19,6 @@ class PaymentControllerTest {
     @BeforeEach
     void setUp() {
         paymentService = new PaymentService();
-        paymentService.setBalance(100f); // Устанавливаем начальный баланс
         paymentController = new PaymentControllerImpl(paymentService);
     }
 
@@ -28,7 +27,7 @@ class PaymentControllerTest {
         PaymentPostRequest request = new PaymentPostRequest();
         request.setAmount(-10f);
 
-        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost(Mono.just(request), null);
+        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost("NEED_NAME",Mono.just(request), null);
 
         StepVerifier.create(result)
                 .assertNext(response -> {
@@ -37,7 +36,7 @@ class PaymentControllerTest {
                     assertEquals("Неверный запрос (некорректная сумма)", response.getBody().getDescription());
 
                     // Проверяем, что баланс не изменился
-                    StepVerifier.create(paymentService.getBalance())
+                    StepVerifier.create(paymentService.getBalance("NEED_NAME"))
                             .expectNext(100f)
                             .verifyComplete();
                 })
@@ -49,7 +48,7 @@ class PaymentControllerTest {
         PaymentPostRequest request = new PaymentPostRequest();
         request.setAmount(50f);
 
-        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost(Mono.just(request), null);
+        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost("NEED_NAME",Mono.just(request), null);
 
         StepVerifier.create(result)
                 .assertNext(response -> {
@@ -58,7 +57,7 @@ class PaymentControllerTest {
                     assertEquals("Заказ успешно оплачен", response.getBody().getDescription());
 
                     // Проверяем, что баланс уменьшился на 50
-                    StepVerifier.create(paymentService.getBalance())
+                    StepVerifier.create(paymentService.getBalance("NEED_NAME"))
                             .expectNext(50f)
                             .verifyComplete();
                 })
@@ -70,7 +69,7 @@ class PaymentControllerTest {
         PaymentPostRequest request = new PaymentPostRequest();
         request.setAmount(150f); // Запрашиваем больше, чем есть на балансе (100)
 
-        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost(Mono.just(request), null);
+        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost("NEED_NAME",Mono.just(request), null);
 
         StepVerifier.create(result)
                 .assertNext(response -> {
@@ -79,7 +78,7 @@ class PaymentControllerTest {
                     assertEquals("Недостаточно средств на балансе", response.getBody().getDescription());
 
                     // Проверяем, что баланс не изменился
-                    StepVerifier.create(paymentService.getBalance())
+                    StepVerifier.create(paymentService.getBalance("NEED_NAME"))
                             .expectNext(100f)
                             .verifyComplete();
                 })
@@ -91,7 +90,7 @@ class PaymentControllerTest {
         PaymentPostRequest request = new PaymentPostRequest();
         request.setAmount(0f);
 
-        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost(Mono.just(request), null);
+        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost("NEED_NAME",Mono.just(request), null);
 
         StepVerifier.create(result)
                 .assertNext(response -> {
