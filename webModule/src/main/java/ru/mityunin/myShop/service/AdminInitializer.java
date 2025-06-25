@@ -31,6 +31,22 @@ public class AdminInitializer implements ApplicationRunner {
                                     return userRepository.save(admin);
                                 }))
         )
+        .then(userRepository.findByUsername("user1")
+                .switchIfEmpty(Mono.defer(() -> {
+                    User user = new User();
+                    user.setUsername("user1");
+                    user.setPassword(passwordEncoder.encode("user1")); // Шифруем пароль
+                    user.setRole("USER");
+                    return userRepository.save(user);
+                })))
+        .then(userRepository.findByUsername("user2")
+                .switchIfEmpty(Mono.defer(() -> {
+                    User user = new User();
+                    user.setUsername("user2");
+                    user.setPassword(passwordEncoder.encode("user2")); // Шифруем пароль
+                    user.setRole("USER");
+                    return userRepository.save(user);
+                })))
         .subscribe();
     }
 }

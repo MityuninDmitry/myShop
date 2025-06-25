@@ -87,11 +87,11 @@ public class OrderServiceTest extends SpringBootPostgreSQLBase {
 
 
 
-        List<Order> orders = orderService.findOrdersBy(OrderStatus.PRE_ORDER).collectList().block();
+        List<Order> orders = orderService.findOrdersBy("NEED_NAME",OrderStatus.PRE_ORDER).collectList().block();
         assertEquals(1,orders.size());
         assertEquals(OrderStatus.PRE_ORDER, orders.getFirst().getStatus());
 
-        orders = orderService.findOrdersBy(OrderStatus.PAID).collectList().block();
+        orders = orderService.findOrdersBy("NEED_NAME",OrderStatus.PAID).collectList().block();
         assertEquals(1,orders.size());
         assertEquals(OrderStatus.PAID, orders.getFirst().getStatus());
     }
@@ -159,7 +159,7 @@ public class OrderServiceTest extends SpringBootPostgreSQLBase {
         Order basket = orderMono.block();
         basket.setTotalPrice(BigDecimal.valueOf(10));
         orderRepository.save(basket).subscribe();
-        orderService.setPaidFor(basket.getId()).block();
+        orderService.setPaidFor("NEED_NAME",basket.getId()).block();
 
 
         List<Order> orders = orderRepository.findAll().collectList().block();

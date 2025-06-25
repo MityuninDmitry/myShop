@@ -27,6 +27,9 @@
             <column name="ordered_products" type="jsonb">
                 <constraints nullable="true"/>
             </column>
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>

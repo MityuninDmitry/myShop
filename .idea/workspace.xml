@@ -4,21 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="readme">
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/model/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/repository/UserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AdminInitializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/CustomReactiveUserDetailsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webModule/src/main/resources/db/changelog/scripts/003-init-users-schema.xml" afterDir="false" />
+    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Первичная настройка секьюрити проекта с изменением схемы БД (пользователь привязан к корзине)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/HomeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/HomeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/PayController.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/PayController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/model/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/model/Order.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/repository/OrderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/repository/OrderRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/resources/db/changelog/db.changelog-master.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/resources/db/changelog/db.changelog-master.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AdminInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AdminInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/resources/db/changelog/scripts/002-init-orders-schema.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/resources/db/changelog/scripts/002-init-orders-schema.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/resources/templates/fragments/common.html" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/resources/templates/fragments/common.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/OrderControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/OrderControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/PayControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/PayControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/OrderServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/OrderServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -571,7 +572,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749582679316</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="Первичная настройка секьюрити проекта с изменением схемы БД (пользователь привязан к корзине)">
+      <option name="closed" value="true" />
+      <created>1750791454115</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1750791454115</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -586,7 +595,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Настройка, чтобы тесты проходили и не было проблем с потерей соединения" />
     <MESSAGE value="тесты на контроллеры + небольшой рефактор кода" />
     <MESSAGE value="Рефактор + докер + readme + правка тестов" />
     <MESSAGE value="Переезд на реактивный стек (WebFlux, r2dbc) + настройки docker-compose и luquibase" />
@@ -611,7 +619,8 @@
     <MESSAGE value="Правка кода ошибки сортировки из кеша" />
     <MESSAGE value="тесты для платежного модуля" />
     <MESSAGE value="readme" />
-    <option name="LAST_COMMIT_MESSAGE" value="readme" />
+    <MESSAGE value="Первичная настройка секьюрити проекта с изменением схемы БД (пользователь привязан к корзине)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Первичная настройка секьюрити проекта с изменением схемы БД (пользователь привязан к корзине)" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/myShop$MyShopApplication.ic" NAME="MyShopApplication Coverage Results" MODIFIED="1746638229442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">

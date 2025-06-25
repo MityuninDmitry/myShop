@@ -89,7 +89,7 @@ public class OrderControllerTest extends SpringBootPostgreSQLBase {
         Order order = orderService.getBasket().block(Duration.ofSeconds(5));
         Double orderTotalPrice = order.getTotalPrice().doubleValue();
         String formattedPrice = String.format("%.2f", orderTotalPrice).replace('.', ',');
-        orderService.setPaidFor(order.getId()).block(Duration.ofSeconds(5));
+        orderService.setPaidFor("NEED_NAME",order.getId()).block(Duration.ofSeconds(5));
 
 
         webTestClient.get().uri("/order/" + order.getId())
@@ -119,7 +119,7 @@ public class OrderControllerTest extends SpringBootPostgreSQLBase {
 
         products.forEach(product -> orderService.updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE).block());
         Order order = orderService.getBasket().block();
-        orderService.setPaidFor(order.getId()).block();
+        orderService.setPaidFor("NEED_NAME",order.getId()).block();
 
         filterRequest.setPage(2);
         products = productService.findAll(filterRequest)
@@ -128,7 +128,7 @@ public class OrderControllerTest extends SpringBootPostgreSQLBase {
 
         products.forEach(product -> orderService.updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE).block());
         order = orderService.getBasket().block();
-        orderService.setPaidFor(order.getId()).block();
+        orderService.setPaidFor("NEED_NAME",order.getId()).block();
 
         webTestClient.get().uri("/order/orders")
                 .exchange()

@@ -30,12 +30,14 @@ public class OrderService {
     private ProductRepository productRepository;
     private final ReactiveRedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper; // Добавляем ObjectMapper
+    private AuthService authService;
 
-    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, ReactiveRedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
+    public OrderService(OrderRepository orderRepository, ProductRepository productRepository, ReactiveRedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper, AuthService authService) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
+        this.authService = authService;
     }
 
     public Mono<Boolean> cacheProducts(Mono<String> keyMono, List<Product> products) {
@@ -43,8 +45,8 @@ public class OrderService {
                 .set(key, products, CACHE_TTL));
     }
 
-    public Flux<Order> findOrdersBy(OrderStatus orderStatus) {
-        return orderRepository.findByStatus(orderStatus);
+    public Flux<Order> findOrdersBy(String userName, OrderStatus orderStatus) {
+        return orderRepository.findByUsernameAndStatus(userName,orderStatus);
     }
 
     public Mono<BigDecimal> getTotalPriceOrders(Flux<Order> orders) {
@@ -115,34 +117,37 @@ public class OrderService {
     }
     @Transactional
     public Mono<Order> getBasket() {
-        return findOrdersBy(OrderStatus.PRE_ORDER).collectList()
+        return authService.getCurrentUsername()
+                .flatMap(userName ->
+                        findOrdersBy(userName,OrderStatus.PRE_ORDER).collectList()
                 .flatMap(orders -> {
                     if (orders.isEmpty()) {
                         // Если корзины нет - создаем новую
-                        return createBasket();
+                        return createBasket(userName);
                     } else {
                         // Берем первую найденную корзину
                         return Mono.just(orders.get(0));
                     }
-                });
+                })) ;
     }
 
     @Transactional
-    public Mono<Order> createBasket() {
+    public Mono<Order> createBasket(String userName) {
         Order basket = new Order();
         basket.setStatus(OrderStatus.PRE_ORDER);
         basket.setTotalPrice(BigDecimal.ZERO);
+        basket.setUsername(userName);
         return orderRepository.save(basket);
     }
 
     @Transactional
-    public Mono<Void> setPaidFor(Long order_id) {
+    public Mono<Void> setPaidFor(String userName, Long order_id) {
         return orderRepository.findById(order_id)
                 .flatMap(order1 -> {
                     order1.setStatus(OrderStatus.PAID);
                     return orderRepository.save(order1);
                 })
-                .then(createBasket())
+                .then(createBasket(userName))
                 .then();
     }
 

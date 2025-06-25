@@ -24,8 +24,14 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/login", "/static/**").permitAll()
-                        .pathMatchers("/**").hasRole("ADMIN")
+                        .pathMatchers(
+                                "/",
+                                "/product/{id}",
+                                "/login",
+                                "/static/**",
+                                "/css/**",
+                                "images/**").permitAll()
+                        .pathMatchers("/**").hasAnyRole("ADMIN","USER")
                         .anyExchange().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())

@@ -7,6 +7,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.mityunin.myShop.model.*;
+import ru.mityunin.myShop.service.AuthService;
 import ru.mityunin.myShop.service.OrderService;
 import ru.mityunin.myShop.service.PayService;
 
@@ -16,10 +17,12 @@ public class OrderController {
 
     private OrderService orderService;
     private PayService payService;
+    private AuthService authService;
 
-    public OrderController(OrderService orderService,PayService payService) {
+    public OrderController(OrderService orderService,PayService payService, AuthService authService) {
         this.orderService = orderService;
         this.payService = payService;
+        this.authService = authService;
     }
 
     @GetMapping("/basket")
@@ -47,7 +50,7 @@ public class OrderController {
     }
     @GetMapping("/orders")
     public Mono<Rendering>  getOrders() {
-        Flux<Order> orders = orderService.findOrdersBy(OrderStatus.PAID);
+        Flux<Order> orders = authService.getCurrentUsername().flatMapMany(userName -> orderService.findOrdersBy(userName,OrderStatus.PAID));
 
         return orderService.getTotalPriceOrders(orders)
                 .map(totalPrice -> Rendering.view("Orders")

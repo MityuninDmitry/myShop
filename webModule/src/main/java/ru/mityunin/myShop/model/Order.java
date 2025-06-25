@@ -27,15 +27,15 @@ public class Order {
     @Column("ordered_products")
     private List<OrderedProduct> orderedProducts = new ArrayList<>();
 
-    @Column("user_id")
-    private Long userId;
+    @Column("username")
+    private String username;
 
-    public Long getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getId() {

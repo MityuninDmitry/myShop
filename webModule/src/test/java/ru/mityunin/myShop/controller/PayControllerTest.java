@@ -42,7 +42,7 @@ public class PayControllerTest extends SpringBootPostgreSQLBase {
         successResponse.setProcessed(true);
         successResponse.setDescription("Processed");
         when(payService.setPaidFor(anyLong())).thenReturn(Mono.just(successResponse));
-        when(orderService.setPaidFor(anyLong())).thenReturn(Mono.empty());
+        when(orderService.setPaidFor("NEED_NAME",anyLong())).thenReturn(Mono.empty());
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("order_id", "123");
@@ -55,7 +55,7 @@ public class PayControllerTest extends SpringBootPostgreSQLBase {
                 .expectHeader().valueEquals("Location", "/order/basket");
 
         verify(payService).setPaidFor(123L);
-        verify(orderService).setPaidFor(123L);
+        verify(orderService).setPaidFor("NEED_NAME",123L);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class PayControllerTest extends SpringBootPostgreSQLBase {
 
 
         verify(payService).setPaidFor(456L);
-        verify(orderService, never()).setPaidFor(anyLong());
+        verify(orderService, never()).setPaidFor("NEED_NAME",anyLong());
     }
 
 }

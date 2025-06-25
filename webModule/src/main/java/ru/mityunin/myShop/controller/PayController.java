@@ -9,6 +9,7 @@ import org.springframework.web.reactive.result.view.RedirectView;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import ru.mityunin.myShop.model.Order;
+import ru.mityunin.myShop.service.AuthService;
 import ru.mityunin.myShop.service.OrderService;
 import ru.mityunin.myShop.service.PayService;
 
@@ -21,10 +22,12 @@ public class PayController {
     private static final Logger log = LoggerFactory.getLogger(PayController.class);
     private PayService payService;
     private OrderService orderService;
+    private AuthService authService;
 
-    public PayController(PayService payService, OrderService orderService) {
+    public PayController(PayService payService, OrderService orderService, AuthService authService) {
         this.payService = payService;
         this.orderService = orderService;
+        this.authService = authService;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -39,7 +42,10 @@ public class PayController {
                         if (paymentResponse.getProcessed()) {
 
                             log.info("processed response {}",paymentResponse.getProcessed());
-                            return orderService.setPaidFor(orderId).thenReturn(new RedirectView("/order/basket"));
+                            return authService.getCurrentUsername()
+                                    .flatMap(userName ->
+                                            orderService.setPaidFor(userName, orderId))
+                                    .thenReturn(new RedirectView("/order/basket"));
                         } else {
                             // Добавляем параметр ошибки в URL
                             String errorMessage = "Оплата не прошла: " +
