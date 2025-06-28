@@ -4,10 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import ru.mityunin.server.domain.BalancePostRequest;
 import ru.mityunin.server.domain.PaymentPostRequest;
+
+
 
 public class PaymentServiceTest {
 
@@ -18,7 +21,7 @@ public class PaymentServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         paymentService = new PaymentService();
-        //paymentService.setBalance(100f); // Устанавливаем начальный баланс для тестов
+        ReflectionTestUtils.setField(paymentService, "initialBalance", 100f);
     }
 
     @Test
@@ -33,7 +36,7 @@ public class PaymentServiceTest {
         BalancePostRequest request = new BalancePostRequest();
         request.setAmount(50f);
 
-        StepVerifier.create(paymentService.increaseBalance("NEED_NAME",Mono.just(request)))
+        StepVerifier.create(paymentService.increaseBalance("NEED_NAME", Mono.just(request)))
                 .expectNext(150f)
                 .verifyComplete();
 

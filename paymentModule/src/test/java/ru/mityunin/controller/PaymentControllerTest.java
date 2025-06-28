@@ -2,102 +2,92 @@ package ru.mityunin.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 import ru.mityunin.server.domain.PaymentPostRequest;
 import ru.mityunin.server.domain.PaymentResponse;
 import ru.mityunin.service.PaymentService;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWebTestClient
 class PaymentControllerTest {
 
-    private PaymentControllerImpl paymentController;
+    @Autowired
+    private WebTestClient webTestClient;
+
+    @MockitoBean
     private PaymentService paymentService;
 
     @BeforeEach
     void setUp() {
-        paymentService = new PaymentService();
-        paymentController = new PaymentControllerImpl(paymentService);
+        when(paymentService.processPayment(anyString(), any(Mono.class)))
+                .thenReturn(Mono.just(true));
     }
 
     @Test
-    void paymentPost_whenAmountIsNegative_shouldReturnUnprocessedResponse() {
+    @WithMockUser(roles = "WEB_APP")
+    void paymentPost_ShouldProcessPayment() {
         PaymentPostRequest request = new PaymentPostRequest();
-        request.setAmount(-10f);
+        request.setAmount(50.0f);
 
-        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost("NEED_NAME",Mono.just(request), null);
-
-        StepVerifier.create(result)
-                .assertNext(response -> {
-                    assertEquals(200, response.getStatusCodeValue());
-                    assertFalse(response.getBody().getProcessed());
-                    assertEquals("Неверный запрос (некорректная сумма)", response.getBody().getDescription());
-
-                    // Проверяем, что баланс не изменился
-                    StepVerifier.create(paymentService.getBalance("NEED_NAME"))
-                            .expectNext(100f)
-                            .verifyComplete();
-                })
-                .verifyComplete();
+        webTestClient.post()
+                .uri("/payment?username=testUser")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PaymentResponse.class)
+                .value(response -> {
+                    assert response.getProcessed();
+                    assert response.getDescription().equals("Заказ успешно оплачен");
+                });
     }
 
     @Test
-    void paymentPost_whenBalanceIsSufficient_shouldReturnProcessedResponse() {
+    @WithMockUser(roles = "WEB_APP")
+    void paymentPost_InvalidAmount_ShouldReturnBadRequest() {
         PaymentPostRequest request = new PaymentPostRequest();
-        request.setAmount(50f);
+        request.setAmount(-10.0f);
 
-        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost("NEED_NAME",Mono.just(request), null);
-
-        StepVerifier.create(result)
-                .assertNext(response -> {
-                    assertEquals(200, response.getStatusCodeValue());
-                    assertTrue(response.getBody().getProcessed());
-                    assertEquals("Заказ успешно оплачен", response.getBody().getDescription());
-
-                    // Проверяем, что баланс уменьшился на 50
-                    StepVerifier.create(paymentService.getBalance("NEED_NAME"))
-                            .expectNext(50f)
-                            .verifyComplete();
-                })
-                .verifyComplete();
+        webTestClient.post()
+                .uri("/payment?username=testUser")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(PaymentResponse.class)
+                ;
     }
 
     @Test
-    void paymentPost_whenBalanceIsInsufficient_shouldReturnUnprocessedResponse() {
+    void paymentPost_Unauthorized_ShouldReturnUnauthorized() {
         PaymentPostRequest request = new PaymentPostRequest();
-        request.setAmount(150f); // Запрашиваем больше, чем есть на балансе (100)
+        request.setAmount(50.0f);
 
-        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost("NEED_NAME",Mono.just(request), null);
-
-        StepVerifier.create(result)
-                .assertNext(response -> {
-                    assertEquals(200, response.getStatusCodeValue());
-                    assertFalse(response.getBody().getProcessed());
-                    assertEquals("Недостаточно средств на балансе", response.getBody().getDescription());
-
-                    // Проверяем, что баланс не изменился
-                    StepVerifier.create(paymentService.getBalance("NEED_NAME"))
-                            .expectNext(100f)
-                            .verifyComplete();
-                })
-                .verifyComplete();
+        webTestClient.post()
+                .uri("/payment?username=testUser")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isUnauthorized();
     }
 
     @Test
-    void paymentPost_whenAmountIsZero_shouldReturnUnprocessedResponse() {
-        PaymentPostRequest request = new PaymentPostRequest();
-        request.setAmount(0f);
-
-        Mono<ResponseEntity<PaymentResponse>> result = paymentController.paymentPost("NEED_NAME",Mono.just(request), null);
-
-        StepVerifier.create(result)
-                .assertNext(response -> {
-                    assertEquals(200, response.getStatusCodeValue());
-                    assertFalse(response.getBody().getProcessed());
-                    assertEquals("Неверный запрос (некорректная сумма)", response.getBody().getDescription());
-                })
-                .verifyComplete();
+    void paymentPost_WithInvalidRole_ShouldReturnForbidden() {
+        webTestClient.mutateWith(SecurityMockServerConfigurers.mockJwt()
+                        .authorities(new SimpleGrantedAuthority("ROLE_INVALID_ROLE")))
+                .post()
+                .uri("/payment?username=testUser")
+                .bodyValue(new PaymentPostRequest())
+                .exchange()
+                .expectStatus().isForbidden();
     }
 }
