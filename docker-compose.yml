@@ -34,6 +34,7 @@ services:
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
       - PAYMENT_SERVICE_URL=http://payment-app:8081
+      - CLIENT_SECRET=X0UJETuvfTVbjVFufsqhfJQApfXi3DZW
   payment-app:
     container_name: payment-app
     hostname: payment-app

@@ -1,5 +1,6 @@
 package ru.mityunin.myShop.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -27,6 +28,9 @@ import ru.mityunin.myShop.service.CustomReactiveUserDetailsService;
 // Активация поддержки аннотаций для методов
 @EnableReactiveMethodSecurity
 public class SecurityConfig {
+
+    @Value("${CLIENT_SECRET}")
+    private String clientSecret;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -102,7 +106,7 @@ public class SecurityConfig {
     private ClientRegistration googleClientRegistration() {
         return ClientRegistration.withRegistrationId("keycloak")
                 .clientId("webModule")
-                .clientSecret("X0UJETuvfTVbjVFufsqhfJQApfXi3DZW")
+                .clientSecret(clientSecret)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .scope("openid", "email")

@@ -56,14 +56,6 @@ public class AdminInitializer implements ApplicationRunner {
                     user.setRole("USER");
                     return userRepository.save(user);
                 })))
-//        .then(manager.authorize(OAuth2AuthorizeRequest
-//                        .withClientRegistrationId("keycloak")
-//                        .principal("internal-service")
-//                        .build()
-//                )
-//                .doOnNext(client -> log.info("✅ Токен получен: " + client.getAccessToken().getTokenValue()))
-//                .doOnError(e -> log.error("❌ Ошибка авторизации: " + e.getMessage()))
-//        )
         .subscribe();
     }
 

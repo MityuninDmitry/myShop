@@ -42,7 +42,7 @@
 
 ## Алгоритм запуска приложения:
 - Установить docker на компьютер
-- Для клонирования прокта
+- Для клонирования проекта
 ```
 git clone https://github.com/MityuninDmitry/myShop.git
 ```
@@ -50,19 +50,32 @@ git clone https://github.com/MityuninDmitry/myShop.git
 ```
 cd myShop
 ```
-- Запуск полностью в докере:
-  - Запуск
-        ```
-        docker-compose up -d --build 
-        ```
-  - Остановка
-        ```
-        docker-compose down
-        ```
-  - Остановка с удалением
-    ```
-    docker-compose down -v
-    ```
+- Запустить кейклок в контейнере выполнив команду
+```
+docker run -d -p 8180:8080 --name keycloak \
+  -e KC_BOOTSTRAP_ADMIN_USERNAME=admin \
+  -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin \
+  quay.io/keycloak/keycloak:26.1.3 start-dev
+```
+- Залогиниться под admin admin
+- Загрузить json клиента webModule [webModule.json](files/webModule.json) (вкладка Clients - Import Client)
+- У клиента webModule добавить роль WEB_APP
+- Во вкладке Credentials скопировать секрет и вставить в CLIENT_SECRET=YOUR_VALUE в docker-compose.yml
+- Запуск
+      ```
+      docker-compose up -d --build 
+      ```
+- Зайти под admin admin в веб приложение по ссылке (http://localhost:8080/login)
+- Слева вверху добавить товары 
+- Далее можно разлогиниться и зайти под user1 user1 или user2 user2
+- Остановка
+      ```
+      docker-compose down
+      ```
+- Остановка с удалением
+  ```
+  docker-compose down -v
+  ```
 
 ## Тесты:
 - для прогона тестов веб модуля
@@ -77,6 +90,7 @@ cd myShop
 ## Используемые технологии
 
 - Spring Boot
+- Spring Security
 - WebFlux
 - Docker
 - PostgreSQL
@@ -86,3 +100,4 @@ cd myShop
 - Maven
 - Junit
 - Redis
+- Keycloak
