@@ -1,8 +1,12 @@
 package ru.mityunin.myShop.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
+import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import ru.mityunin.myShop.model.User;
@@ -10,17 +14,22 @@ import ru.mityunin.myShop.repository.UserRepository;
 
 @Component
 public class AdminInitializer implements ApplicationRunner {
-
+    private static final Logger log = LoggerFactory.getLogger(AdminInitializer.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private ReactiveOAuth2AuthorizedClientManager manager;
 
-    public AdminInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AdminInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder,ReactiveOAuth2AuthorizedClientManager manager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.manager = manager;
     }
 
     @Override
     public void run(ApplicationArguments args) {
+        log.info("Before client registration {}");
+
+
         userRepository.deleteAll().then(
                         userRepository.findByUsername("admin")
                                 .switchIfEmpty(Mono.defer(() -> {
@@ -47,6 +56,16 @@ public class AdminInitializer implements ApplicationRunner {
                     user.setRole("USER");
                     return userRepository.save(user);
                 })))
+        .then(manager.authorize(OAuth2AuthorizeRequest
+                        .withClientRegistrationId("keycloak")
+                        .principal("internal-service")
+                        .build()
+                )
+                .doOnNext(client -> log.info("✅ Токен получен: " + client.getAccessToken().getTokenValue()))
+                .doOnError(e -> log.error("❌ Ошибка авторизации: " + e.getMessage()))
+        )
         .subscribe();
     }
+
+
 }

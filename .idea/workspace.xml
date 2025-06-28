@@ -5,14 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Поменял yml спеку для автогенерации кода с учетом передачи username для привязки к балансу. Поменял логику приложений, чтобы баланс списывался с пользователя.">
+      <change afterPath="$PROJECT_DIR$/paymentModule/src/main/java/ru/mityunin/configuration/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/configuration/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/PayController.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/controller/PayController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AdminInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AdminInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/PayService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/PayService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -33,6 +43,7 @@
       </GitPushTagMode>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -140,7 +151,8 @@
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "run.code.analysis.last.selected.profile": "pProject Default"
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "editor.preferences.import"
   }
 }]]></component>
   <component name="RecentsManager">
