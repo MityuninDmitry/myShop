@@ -88,4 +88,8 @@ public class Order {
             return orderedProduct;
         }).getCount();
     }
+
+    public static Order emptyOrder() {
+        return new Order();
+    }
 }

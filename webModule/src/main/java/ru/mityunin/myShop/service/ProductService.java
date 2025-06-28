@@ -1,6 +1,5 @@
 package ru.mityunin.myShop.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.mityunin.myShop.controller.DTO.FilterRequest;
-import ru.mityunin.myShop.model.*;
+import ru.mityunin.myShop.model.Order;
+import ru.mityunin.myShop.model.Product;
 import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.ProductCustomRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
@@ -28,6 +28,7 @@ import java.util.Map;
 
 @Service
 public class ProductService {
+    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
     private static final String PRODUCT_CACHE_PREFIX = "products:";
     @Value("${product.cache.ttl:1m}")
     private Duration CACHE_TTL;
@@ -110,8 +111,9 @@ public class ProductService {
         Flux<Product> products = filterRequest.textFilter() == null || filterRequest.textFilter().isBlank() ?
                 productCustomRepository.findAll(pageable):
                 productCustomRepository.findAllFiltered(filterRequest.textFilter(),pageable);
-
+        log.info("findAllFromDB before get basket");
         return orderService.getBasket()
+                .doOnNext(value -> log.info("findAllFromDB after get basket"))
                 .flatMapMany(basket ->
                         products.flatMap(product ->
                                 Mono.fromCallable(() -> basket.countInOrderedProductWith(product.getId()))
@@ -119,7 +121,11 @@ public class ProductService {
                                             product.setCountInBasket(count);
                                             return product;
                                         })
-                        ));
+                        ))
+                .switchIfEmpty(products.map(p -> { // для анонимных
+                    p.setCountInBasket(0);
+                    return p;
+                }));
     }
 
     @Transactional
@@ -140,7 +146,7 @@ public class ProductService {
 
     // проставление свойства на товаре countInBasket - для отображения в интерфейсе (не для БД)
     public Mono<Product> setCountInBasketFor(Product product) {
-        return orderService.getBasket().map(order -> {
+        return orderService.getBasket().defaultIfEmpty(Order.emptyOrder()).map(order -> {
             int count = order.countInOrderedProductWith(product.getId());
             product.setCountInBasket(count);
             return product;
@@ -177,5 +183,6 @@ public class ProductService {
                     }
                     return Mono.empty();
                 });
+
     }
 }

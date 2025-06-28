@@ -19,7 +19,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class OrderService {
@@ -139,7 +138,9 @@ public class OrderService {
 //    }
 
     public Mono<Order> getBasket() {
+        log.info("get Basket method");
         return authService.getCurrentUsername()
+                .doOnNext(value -> log.info("currentUserName from Basket {}", value))
                 .flatMap(userName -> basketCreationLocks
                         .computeIfAbsent(userName, un -> createBasketWithLock(un).cache())
                 );
