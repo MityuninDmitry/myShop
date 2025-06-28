@@ -1,33 +1,38 @@
 package ru.mityunin.myShop.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import ru.mityunin.myShop.SpringBootPostgreSQLBase;
 import ru.mityunin.myShop.controller.DTO.FilterRequest;
-import ru.mityunin.myShop.model.*;
+import ru.mityunin.myShop.model.Order;
+import ru.mityunin.myShop.model.OrderStatus;
+import ru.mityunin.myShop.model.OrderedProduct;
+import ru.mityunin.myShop.model.Product;
 import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
 
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestPropertySource(properties = "product.cache.ttl=2s")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest
 public class ProductServiceTest extends SpringBootPostgreSQLBase {
     @Autowired
     private ProductRepository productRepository;
@@ -44,18 +49,20 @@ public class ProductServiceTest extends SpringBootPostgreSQLBase {
 
     @BeforeEach
     public void createTestData() {
-        Flux.zip(productRepository.deleteAll(), orderRepository.deleteAll())
-                .thenMany(Flux.range(1,50).flatMap( i ->
-                        {
-                            Product product = new Product();
-                            product.setName("Name " + i);
-                            product.setPrice(BigDecimal.valueOf(i));
-                            product.setDescription("Some desc " + i);
-                            product.setImageUrl("https://images.hdqwalls.com/download/sunset-ronin-ghost-of-tsushima-40-2880x1800.jpg");
+        orderRepository.deleteAll().block();
+        productRepository.deleteAll().block();
+        redisTemplate.getConnectionFactory().getReactiveConnection().serverCommands().flushAll().block();
+        Flux.range(1, 50).flatMap(i ->
+                {
+                    Product product = new Product();
+                    product.setName("Name " + i);
+                    product.setPrice(BigDecimal.valueOf(i));
+                    product.setDescription("Some desc " + i);
+                    product.setImageUrl("https://images.hdqwalls.com/download/sunset-ronin-ghost-of-tsushima-40-2880x1800.jpg");
 
-                            return productRepository.save(product);
-                        }
-                )).blockLast();
+                    return productRepository.save(product);
+                }
+        ).blockLast();
     }
 
     @Test
@@ -122,10 +129,12 @@ public class ProductServiceTest extends SpringBootPostgreSQLBase {
     }
 
     @Test
+    @WithMockUser(username = "user1")
     public void shouldReturnNotZeroCountInBasketWhenProductInBasket() {
         Order basket = new Order();
         basket.setStatus(OrderStatus.PRE_ORDER);
         basket.setTotalPrice(BigDecimal.ZERO);
+        basket.setUsername("user1");
 
         Product product = productRepository.findAll().collectList().block().getFirst();
 
@@ -154,8 +163,7 @@ public class ProductServiceTest extends SpringBootPostgreSQLBase {
         await().atMost(10, SECONDS)
                 .pollInterval(1, SECONDS)
                 .untilAsserted(() ->
-                        assertThat(productService.findAllFromCache(cacheKey).collectList().block())
-                                .isEmpty()
+                        assertThat(productService.findAllFromCache(cacheKey).collectList().block().isEmpty())
                 );
     }
 

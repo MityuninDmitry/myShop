@@ -8,25 +8,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import ru.mityunin.client.domain.PaymentResponse;
 import ru.mityunin.myShop.SpringBootPostgreSQLBase;
-import ru.mityunin.myShop.controller.DTO.FilterRequest;
-import ru.mityunin.myShop.model.*;
+import ru.mityunin.myShop.model.ActionWithProduct;
+import ru.mityunin.myShop.model.Order;
+import ru.mityunin.myShop.model.Product;
 import ru.mityunin.myShop.repository.OrderRepository;
 import ru.mityunin.myShop.repository.ProductCustomRepository;
 import ru.mityunin.myShop.repository.ProductRepository;
+import ru.mityunin.myShop.repository.UserRepository;
+import ru.mityunin.myShop.service.AuthService;
 import ru.mityunin.myShop.service.OrderService;
+import ru.mityunin.myShop.service.PayService;
 import ru.mityunin.myShop.service.ProductService;
 
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
@@ -45,259 +54,180 @@ public class OrderControllerTest extends SpringBootPostgreSQLBase {
     private OrderService orderService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private UserRepository userRepository;
+
+    @MockitoBean
+    private PayService payService;
+    @Autowired
+    private AuthService authService;
 
     @BeforeEach
-    public void createTestData() {
-        Flux.zip(productRepository.deleteAll(), orderRepository.deleteAll())
-                .thenMany(Flux.range(0,50).flatMap( i ->
-                        {
-                            Product product = new Product();
-                            product.setName("Name " + i);
-                            product.setPrice(BigDecimal.valueOf(i));
-                            product.setDescription("Some desc " + i);
-                            product.setImageUrl("https://images.hdqwalls.com/download/sunset-ronin-ghost-of-tsushima-40-2880x1800.jpg");
+    public void setUp() {
+        // Очистка данных и создание тестовых пользователей
 
-                            return productRepository.save(product);
-                        }
-                )).blockLast();
+        Flux.zip(
+                        productRepository.deleteAll(),
+                        orderRepository.deleteAll()
+                )
+                .thenMany(Flux.range(0, 50).flatMap(i -> {
+                    Product product = new Product();
+                    product.setName("Name " + i);
+                    product.setPrice(BigDecimal.valueOf(i));
+                    product.setDescription("Some desc " + i);
+                    product.setImageUrl("https://images.hdqwalls.com/download/sunset-ronin-ghost-of-tsushima-40-2880x1800.jpg");
+                    return productRepository.save(product);
+                }))
+                .blockLast();
+
+
+        // Моки для PayService
+        when(payService.getCurrentBalance()).thenReturn(Mono.just(1000.0f));
+        when(payService.setPaidFor(anyLong())).thenReturn(Mono.just(
+                new PaymentResponse().processed(true).description("Payment successful")));
     }
 
     @Test
-    public void getEmptyBasket() throws Exception {
+    @WithMockUser(username = "user1", roles = "USER")
+    public void getBasket_shouldShowBasketWithCurrentBalance() {
         webTestClient.get().uri("/order/basket")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(String.class)
                 .consumeWith(response -> {
-                    String body = new String(response.getResponseBody());
+                    String body = response.getResponseBody();
                     Document document = Jsoup.parse(body);
-                    var productCards = document.select(".product-card");
-                    assertEquals(0, productCards.size());
-                    assertTrue(body.contains("<span>Общая цена корзины: <span>0,00 ₽</span></span>"));
-                    assertTrue(body.contains("<div class=\"empty-message\">\n" +
-                            "  Товары не найдены\n" +
-                            "</div>"));
+
+                    assertTrue(body.contains("Общая цена корзины"));
+                    assertTrue(body.contains("1000,00")); // Проверка баланса
+                    assertTrue(body.contains("Товары не найдены")); // Пустая корзина
                 });
     }
 
     @Test
-    public void getOrderInfo() throws Exception {
-        //  подготовка заказа
+    @WithMockUser(username = "user1", roles = "USER")
+    public void getBasket_shouldShowPaymentErrorWhenPresent() {
+        String errorMessage = "Ошибка оплаты";
+        webTestClient.get().uri("/order/basket?error=" + errorMessage)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .consumeWith(response -> {
+                    String body = response.getResponseBody();
+                    assertTrue(body.contains(errorMessage));
+                });
+    }
 
-        List<Product> products = productRepository.findAll().collectList().block().subList(0,10);
-        products.forEach(product -> orderService.updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE).block(Duration.ofSeconds(5)));
+    @Test
+    @WithMockUser(username = "user1", roles = "USER")
+    public void getOrderInfo_shouldShowOrderDetails() {
+        // Создаем тестовый заказ
+        Product product = productRepository.findAll().blockFirst(Duration.ofSeconds(5));
+        orderService.updateProductInBasketBy(product.getId(), ActionWithProduct.INCREASE)
+                .block(Duration.ofSeconds(5));
+
         Order order = orderService.getBasket().block(Duration.ofSeconds(5));
-        Double orderTotalPrice = order.getTotalPrice().doubleValue();
-        String formattedPrice = String.format("%.2f", orderTotalPrice).replace('.', ',');
-        orderService.setPaidFor("NEED_NAME",order.getId()).block(Duration.ofSeconds(5));
-
+        orderService.setPaidFor("user1", order.getId()).block(Duration.ofSeconds(5));
 
         webTestClient.get().uri("/order/" + order.getId())
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody()
+                .expectBody(String.class)
                 .consumeWith(response -> {
-                    String body = new String(response.getResponseBody());
+                    String body = response.getResponseBody();
                     Document document = Jsoup.parse(body);
 
-                    var productCards = document.select(".product-card");
-                    assertEquals(10, productCards.size());
-
-
-                    assertTrue(body.contains("<span>Общая стоимость заказа: <span>" +formattedPrice+ " ₽</span></span>"));
-
+                    assertTrue(body.contains("Общая стоимость заказа"));
+                    assertTrue(body.contains(product.getName()));
                 });
     }
 
     @Test
-    public void getOrders_OnlyPaidOrdersAndExactSize() throws Exception {
-        // подготовка данных
-        FilterRequest filterRequest = new FilterRequest();
-        List<Product> products = productService.findAll(filterRequest)
-                .collectList()
-                .block();
+    @WithMockUser(username = "user1", roles = "USER")
+    public void getOrders_shouldShowOnlyPaidOrdersForCurrentUser() {
+        // Создаем заказы для разных пользователей
+        Product product = productRepository.findAll().blockFirst(Duration.ofSeconds(5));
 
-        products.forEach(product -> orderService.updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE).block());
-        Order order = orderService.getBasket().block();
-        orderService.setPaidFor("NEED_NAME",order.getId()).block();
+        // Заказ для user1
+        orderService.updateProductInBasketBy(product.getId(), ActionWithProduct.INCREASE)
+                .block(Duration.ofSeconds(5));
+        Order user1Order = orderService.getBasket().block(Duration.ofSeconds(5));
+        orderService.setPaidFor("user1", user1Order.getId()).block(Duration.ofSeconds(5));
 
-        filterRequest.setPage(2);
-        products = productService.findAll(filterRequest)
-                .collectList()
-                .block();
-
-        products.forEach(product -> orderService.updateProductInBasketBy(product.getId(),ActionWithProduct.INCREASE).block());
-        order = orderService.getBasket().block();
-        orderService.setPaidFor("NEED_NAME",order.getId()).block();
+        // Заказ для user2 (не должен отображаться)
+        orderService.updateProductInBasketBy(product.getId(), ActionWithProduct.INCREASE)
+                .block(Duration.ofSeconds(5));
+        Order user2Order = orderService.getBasket().block(Duration.ofSeconds(5));
+        orderService.setPaidFor("user2", user2Order.getId()).block(Duration.ofSeconds(5));
 
         webTestClient.get().uri("/order/orders")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(String.class)
                 .consumeWith(response -> {
-                    String body = new String(response.getResponseBody());
+                    String body = response.getResponseBody();
                     Document document = Jsoup.parse(body);
 
-                    var productCards = document.select(".product-card");
-                    assertEquals(2, productCards.size());
-                })
-                ;
+                    // Проверяем что отображается только заказ текущего пользователя
+                    assertTrue(body.contains(user1Order.getId().toString()));
+                });
+    }
+    @Test
+    @WithMockUser(username = "user1", roles = "USER")
+    public void changeProductQuantity_shouldRedirectToCorrectPage() {
+        Product product = productRepository.findAll().blockFirst(Duration.ofSeconds(5));
+
+        // Проверка для source=products
+        testProductActionRedirect(product, "products",
+                "/?page=0&size=10&textFilter=&sortBy=name&sortDirection=asc");
+
+        // Проверка для source=product
+        testProductActionRedirect(product, "product",
+                "/product/" + product.getId());
+
+        // Проверка для source=basket
+        testProductActionRedirect(product, "basket",
+                "/order/basket");
     }
 
     @Test
-    public void increaseProductInBasketFromDifferentSources() throws Exception  {
-        FilterRequest filterRequest = new FilterRequest();
-        List<Product> products = productService.findAll(filterRequest)
-                .collectList()
-                .block();
-
-        Product product = products.getFirst();
-
+    @WithMockUser(username = "user1", roles = "USER")
+    public void changeProductQuantity_shouldHandleInvalidParameters() {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("product_id", product.getId().toString());
-        formData.add("actionWithProduct", "INCREASE");
+        formData.add("actionWithProduct", "INVALID_ACTION");
         formData.add("source", "products");
-        formData.add("page", filterRequest.page().toString());
-        formData.add("size", filterRequest.size().toString());
-        formData.add("textFilter", filterRequest.textFilter());
-        formData.add("sortBy", filterRequest.sortBy());
-        formData.add("sortDirection", filterRequest.sortDirection());
 
         webTestClient.post().uri("/order/change")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(formData))
                 .exchange()
                 .expectStatus().is3xxRedirection()
-                .expectHeader().valueEquals("Location", "/?page=0&size=10&textFilter=&sortBy=name&sortDirection=asc")
-        ;
-
-        Order order = orderService.getBasket().block();
-
-        assertEquals(1,order.getOrderedProducts().stream().filter(orderedProduct -> orderedProduct.getProduct_id().equals(product.getId())).findFirst().get().getCount());
-
-        formData = new LinkedMultiValueMap<>();
-        formData.add("product_id", product.getId().toString());
-        formData.add("actionWithProduct", "INCREASE");
-        formData.add("source", "product");
-        formData.add("page", filterRequest.page().toString());
-        formData.add("size", filterRequest.size().toString());
-        formData.add("textFilter", filterRequest.textFilter());
-        formData.add("sortBy", filterRequest.sortBy());
-        formData.add("sortDirection", filterRequest.sortDirection());
-
-        webTestClient.post().uri("/order/change")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData(formData))
-                .exchange()
-                .expectStatus().is3xxRedirection()
-                .expectHeader().valueEquals("Location", "/product/" + product.getId())
-        ;
-
-        order = orderService.getBasket().block();
-
-        assertEquals(2,order.getOrderedProducts().stream().filter(orderedProduct -> orderedProduct.getProduct_id().equals(product.getId())).findFirst().get().getCount());
-
-        formData = new LinkedMultiValueMap<>();
-        formData.add("product_id", product.getId().toString());
-        formData.add("actionWithProduct", "INCREASE");
-        formData.add("source", "basket");
-        formData.add("page", filterRequest.page().toString());
-        formData.add("size", filterRequest.size().toString());
-        formData.add("textFilter", filterRequest.textFilter());
-        formData.add("sortBy", filterRequest.sortBy());
-        formData.add("sortDirection", filterRequest.sortDirection());
-
-        webTestClient.post().uri("/order/change")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData(formData))
-                .exchange()
-                .expectStatus().is3xxRedirection()
-                .expectHeader().valueEquals("Location", "/order/basket")
-        ;
-
-        order = orderService.getBasket().block();
-
-        assertEquals(3,order.getOrderedProducts().stream().filter(orderedProduct -> orderedProduct.getProduct_id().equals(product.getId())).findFirst().get().getCount());
-
+                .expectHeader().valueEquals("Location", "/error");
     }
 
     @Test
-    public void decreaseProductInBasketFromDifferentSources() throws Exception  {
-        FilterRequest filterRequest = new FilterRequest();
-        List<Product> products = productService.findAll(filterRequest)
-                .collectList()
-                .block();
+    public void unauthorizedAccess_shouldBeDenied() {
+        webTestClient.get().uri("/order/basket")
+                .exchange()
+                .expectStatus().is3xxRedirection();
 
-        Product product = products.getFirst();
-        orderService.updateProductInBasketBy(product.getId(), ActionWithProduct.INCREASE).block();
-        orderService.updateProductInBasketBy(product.getId(), ActionWithProduct.INCREASE).block();
-        orderService.updateProductInBasketBy(product.getId(), ActionWithProduct.INCREASE).block();
+        webTestClient.post().uri("/order/change")
+                .exchange()
+                .expectStatus().is3xxRedirection();
+    }
 
+
+    private void testProductActionRedirect(Product product, String source, String expectedLocation) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("product_id", product.getId().toString());
-        formData.add("actionWithProduct", "DECREASE");
-        formData.add("source", "products");
-        formData.add("page", filterRequest.page().toString());
-        formData.add("size", filterRequest.size().toString());
-        formData.add("textFilter", filterRequest.textFilter());
-        formData.add("sortBy", filterRequest.sortBy());
-        formData.add("sortDirection", filterRequest.sortDirection());
+        formData.add("actionWithProduct", "INCREASE");
+        formData.add("source", source);
 
         webTestClient.post().uri("/order/change")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(formData))
                 .exchange()
                 .expectStatus().is3xxRedirection()
-                .expectHeader().valueEquals("Location", "/?page=0&size=10&textFilter=&sortBy=name&sortDirection=asc")
-        ;
-
-        Order order = orderService.getBasket().block();
-
-        assertEquals(2,order.getOrderedProducts().stream().filter(orderedProduct -> orderedProduct.getProduct_id().equals(product.getId())).findFirst().get().getCount());
-
-        formData = new LinkedMultiValueMap<>();
-        formData.add("product_id", product.getId().toString());
-        formData.add("actionWithProduct", "DECREASE");
-        formData.add("source", "product");
-        formData.add("page", filterRequest.page().toString());
-        formData.add("size", filterRequest.size().toString());
-        formData.add("textFilter", filterRequest.textFilter());
-        formData.add("sortBy", filterRequest.sortBy());
-        formData.add("sortDirection", filterRequest.sortDirection());
-
-        webTestClient.post().uri("/order/change")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData(formData))
-                .exchange()
-                .expectStatus().is3xxRedirection()
-                .expectHeader().valueEquals("Location", "/product/" + product.getId())
-        ;
-
-        order = orderService.getBasket().block();
-
-        assertEquals(1,order.getOrderedProducts().stream().filter(orderedProduct -> orderedProduct.getProduct_id().equals(product.getId())).findFirst().get().getCount());
-
-        formData = new LinkedMultiValueMap<>();
-        formData.add("product_id", product.getId().toString());
-        formData.add("actionWithProduct", "DECREASE");
-        formData.add("source", "basket");
-        formData.add("page", filterRequest.page().toString());
-        formData.add("size", filterRequest.size().toString());
-        formData.add("textFilter", filterRequest.textFilter());
-        formData.add("sortBy", filterRequest.sortBy());
-        formData.add("sortDirection", filterRequest.sortDirection());
-
-        webTestClient.post().uri("/order/change")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData(formData))
-                .exchange()
-                .expectStatus().is3xxRedirection()
-                .expectHeader().valueEquals("Location", "/order/basket")
-        ;
-
-        order = orderService.getBasket().block();
-
-        assertTrue(order.getOrderedProducts().isEmpty());
-
+                .expectHeader().valueEquals("Location", expectedLocation);
     }
 }

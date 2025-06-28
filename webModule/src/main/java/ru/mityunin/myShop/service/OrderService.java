@@ -119,28 +119,8 @@ public class OrderService {
         return getProductsByOrder(orderMono);
     }
 
-//    @Transactional
-//    public Mono<Order> getBasket() {
-//        return authService.getCurrentUsername()
-//                .flatMap(userName ->
-//                        findOrdersBy(userName,OrderStatus.PRE_ORDER).collectList()
-//                .flatMap(orders -> {
-//                    if (orders.isEmpty()) {
-//                        // Если корзины нет - создаем новую
-//
-//                        return createBasket(userName);
-//                    } else {
-//                        // Берем первую найденную корзину
-//
-//                        return Mono.just(orders.get(0));
-//                    }
-//                })) ;
-//    }
-
     public Mono<Order> getBasket() {
-        log.info("get Basket method");
         return authService.getCurrentUsername()
-                .doOnNext(value -> log.info("currentUserName from Basket {}", value))
                 .flatMap(userName -> basketCreationLocks
                         .computeIfAbsent(userName, un -> createBasketWithLock(un).cache())
                 );

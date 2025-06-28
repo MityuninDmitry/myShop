@@ -4,12 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="ДЛя анонимного пользователя поправил отображение товаров">
+    <list default="true" id="221df886-8453-4305-a834-33f6ead0abe0" name="Changes" comment="Поправил тесты для платежного модуля">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/controller/BalanceControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/controller/BalanceControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/controller/PaymentControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/controller/PaymentControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/service/PaymentServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentModule/src/test/java/ru/mityunin/service/PaymentServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AdminInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/AdminInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/main/java/ru/mityunin/myShop/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/application-test.properties" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/application-test.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/SpringBootPostgreSQLBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/SpringBootPostgreSQLBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/HomeControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/HomeControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/OrderControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/OrderControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/PayControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/PayControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/ProductControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/controller/ProductControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/OrderServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/OrderServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/PayServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/PayServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/ProductServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/webModule/src/test/java/ru/mityunin/myShop/service/ProductServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -608,7 +616,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751112406084</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Поправил тесты для платежного модуля">
+      <option name="closed" value="true" />
+      <created>1751116443737</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1751116443737</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -623,7 +639,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Убрал пока тесты, поправил только ProductControllerTest. Настроил конфигурацию для подключения к БД для тестов и luquibase." />
     <MESSAGE value="Восстановил тесты HomeControllerTest + добавил jsoup для парса страницы для подсчета количества товаров на странице" />
     <MESSAGE value="Восстановил тесты OrderControllerTest" />
     <MESSAGE value="Восстановил тесты PayControllerTest" />
@@ -648,7 +663,8 @@
     <MESSAGE value="Поменял yml спеку для автогенерации кода с учетом передачи username для привязки к балансу. Поменял логику приложений, чтобы баланс списывался с пользователя." />
     <MESSAGE value="Настройка получения токена для webModule и его передача в заголовке авторизации в платежный сервис. Настройка считывания роли из платежного сервиса." />
     <MESSAGE value="ДЛя анонимного пользователя поправил отображение товаров" />
-    <option name="LAST_COMMIT_MESSAGE" value="ДЛя анонимного пользователя поправил отображение товаров" />
+    <MESSAGE value="Поправил тесты для платежного модуля" />
+    <option name="LAST_COMMIT_MESSAGE" value="Поправил тесты для платежного модуля" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/myShop$MyShopApplication.ic" NAME="MyShopApplication Coverage Results" MODIFIED="1746638229442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">

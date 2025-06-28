@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -18,6 +17,7 @@ public class AdminInitializer implements ApplicationRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private ReactiveOAuth2AuthorizedClientManager manager;
+
 
     public AdminInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder,ReactiveOAuth2AuthorizedClientManager manager) {
         this.userRepository = userRepository;
@@ -56,14 +56,14 @@ public class AdminInitializer implements ApplicationRunner {
                     user.setRole("USER");
                     return userRepository.save(user);
                 })))
-        .then(manager.authorize(OAuth2AuthorizeRequest
-                        .withClientRegistrationId("keycloak")
-                        .principal("internal-service")
-                        .build()
-                )
-                .doOnNext(client -> log.info("✅ Токен получен: " + client.getAccessToken().getTokenValue()))
-                .doOnError(e -> log.error("❌ Ошибка авторизации: " + e.getMessage()))
-        )
+//        .then(manager.authorize(OAuth2AuthorizeRequest
+//                        .withClientRegistrationId("keycloak")
+//                        .principal("internal-service")
+//                        .build()
+//                )
+//                .doOnNext(client -> log.info("✅ Токен получен: " + client.getAccessToken().getTokenValue()))
+//                .doOnError(e -> log.error("❌ Ошибка авторизации: " + e.getMessage()))
+//        )
         .subscribe();
     }
 
